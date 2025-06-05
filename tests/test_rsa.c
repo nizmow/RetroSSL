@@ -54,6 +54,33 @@ int main()
         printf("ninv31(0x%08lX) = 0x%08lX\n", (unsigned long)x, (unsigned long)inv);
     }
 
-    printf("\nRSA i31 basic functions test completed.\n");
+    printf("\nTesting Montgomery arithmetic...\n");
+    {
+        /* Simple test: compute 3^5 mod 7 = 5 */
+        uint32_t base[3] = {32, 3, 0};      /* base = 3 */
+        uint32_t mod[3] = {32, 7, 0};       /* modulus = 7 */
+        unsigned char exp[1] = {5};          /* exponent = 5 */
+        uint32_t tmp[20];                    /* temporary space */
+        uint32_t m0i;
+        uint32_t result;
+        
+        m0i = br_i31_ninv31(7);
+        printf("Computing 3^5 mod 7...\n");
+        printf("m0i = 0x%08lX\n", (unsigned long)m0i);
+        
+        if (br_i31_modpow_opt(base, exp, 1, mod, m0i, tmp, 20)) {
+            result = base[1];
+            printf("Result: %lu (expected: 5)\n", (unsigned long)result);
+            if (result == 5) {
+                printf("PASS: Modular exponentiation test\n");
+            } else {
+                printf("FAIL: Modular exponentiation test\n");
+            }
+        } else {
+            printf("FAIL: Modular exponentiation failed\n");
+        }
+    }
+
+    printf("\nRSA i31 functions test completed.\n");
     return 0;
 }

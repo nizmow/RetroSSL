@@ -46,7 +46,13 @@ RSA_SRCS = src/rsa/rsa_i31_pub.c \
            src/int/i31_ninv31.c \
            src/int/i31_encode.c \
            src/int/i31_decmod.c \
-           src/int/i31_modpow.c
+           src/int/i31_modpow.c \
+           src/int/i31_montmul.c \
+           src/int/i31_tmont.c \
+           src/int/i31_fmont.c \
+           src/int/i31_sub.c \
+           src/int/i31_add.c \
+           src/int/i31_muladd.c
 
 # Test source files
 TEST_SRCS = tests/test_sha1.c \
