@@ -14,7 +14,7 @@ WINE = wine
 # -zc: enable C99 specific features  
 # -w4: warning level 4
 # -ox: optimize for speed
-CFLAGS = -bt=nt -l=nt -za99 -zc -iopt/h -iopt/h/nt -zq -w4 -ox \
+CFLAGS = -bt=nt -l=nt -za99 -zc -iopt/h -iopt/h/nt -iinclude -zq -w4 -ox \
          -dWIN32 -d_WIN32 -d__STDC_CONSTANT_MACROS -d__STDC_LIMIT_MACROS
 
 # Source file organization
@@ -32,12 +32,21 @@ CRYPTO_SRCS = src/crypto/aes_common.c \
               src/crypto/aes_small_cbcenc.c \
               src/crypto/aes_small_cbcdec.c
 
+RSA_SRCS = src/rsa/rsa_i31_pub.c \
+           src/int/i31_decode.c \
+           src/int/i31_bitlen.c \
+           src/int/i31_ninv31.c \
+           src/int/i31_encode.c \
+           src/int/i31_decmod.c \
+           src/int/i31_modpow.c
+
 # Test executables
 TESTS = test_sha1.exe \
         test_md5.exe \
         test_sha256.exe \
         test_hmac.exe \
         test_aes.exe \
+        test_rsa.exe \
         test_unified.exe \
         test_console.exe
 
@@ -76,6 +85,9 @@ test_hmac.exe: tests/test_hmac.c $(CODEC_SRCS) $(HASH_SRCS) $(MAC_SRCS)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 test_aes.exe: tests/test_aes.c $(CODEC_SRCS) $(CRYPTO_SRCS)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
+test_rsa.exe: tests/test_rsa.c $(CODEC_SRCS) $(RSA_SRCS)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 test_unified.exe: tests/test_sha1.c $(CODEC_SRCS) src/hash/sha1.c src/hash/md5.c
