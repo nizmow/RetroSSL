@@ -232,6 +232,7 @@ br_sha256_out(const br_sha256_context *cc, void *dst)
 	sha2small_out((const br_sha224_context *)cc, dst, 8);
 }
 
+
 /* see retrossl_hash.h */
 const br_hash_class br_sha224_vtable = {
 	sizeof(br_sha224_context),

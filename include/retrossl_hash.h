@@ -720,7 +720,6 @@ void br_sha256_update(br_sha256_context *ctx, const void *data, size_t len);
  */
 void br_sha256_out(const br_sha256_context *ctx, void *out);
 
-#ifdef BR_DOXYGEN_IGNORE
 /**
  * \brief Save SHA-256 running state.
  *
@@ -734,11 +733,7 @@ void br_sha256_out(const br_sha256_context *ctx, void *out);
  * \return  the injected total byte length.
  */
 uint64_t br_sha256_state(const br_sha256_context *ctx, void *out);
-#else
-#define br_sha256_state       br_sha224_state
-#endif
 
-#ifdef BR_DOXYGEN_IGNORE
 /**
  * \brief Restore SHA-256 running state.
  *
@@ -750,9 +745,7 @@ uint64_t br_sha256_state(const br_sha256_context *ctx, void *out);
  */
 void br_sha256_set_state(br_sha256_context *ctx,
 	const void *stb, uint64_t count);
-#else
-#define br_sha256_set_state   br_sha224_set_state
-#endif
+
 
 /**
  * \brief Symbolic identifier for SHA-384.

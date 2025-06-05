@@ -28,7 +28,7 @@ CFLAGS="-bt=nt -l=nt -za99 -zc -iopt/h -iopt/h/nt -zq -w4 -ox -dWIN32 -d_WIN32 -
 
 # Clean previous builds
 echo "Cleaning previous builds..."
-rm -f test_sha1.exe test_md5.exe test_sha256.exe test_aes.exe test_unified.exe test_console.exe *.o *.err
+rm -f test_sha1.exe test_md5.exe test_sha256.exe test_hmac.exe test_aes.exe test_unified.exe test_console.exe *.o *.err
 
 echo "Compiling SHA1 test..."
 ./opt/armo64/wcl386 $CFLAGS -fe=test_sha1.exe tests/test_sha1.c src/codec.c src/hash/sha1.c
@@ -38,6 +38,10 @@ echo "Compiling MD5 test..."
 
 echo "Compiling SHA256 test..."
 ./opt/armo64/wcl386 $CFLAGS -fe=test_sha256.exe tests/test_sha256.c src/codec.c src/hash/sha2small.c
+
+echo "Compiling HMAC test..."
+./opt/armo64/wcl386 $CFLAGS -fe=test_hmac.exe tests/test_hmac.c src/codec.c \
+    src/hash/sha1.c src/hash/sha2small.c src/mac/hmac.c
 
 echo "Compiling AES test..."
 ./opt/armo64/wcl386 $CFLAGS -fe=test_aes.exe tests/test_aes.c src/codec.c \
@@ -58,6 +62,7 @@ echo "Created executables:"
 echo "  - test_sha1.exe ($(ls -lh test_sha1.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
 echo "  - test_md5.exe ($(ls -lh test_md5.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))" 
 echo "  - test_sha256.exe ($(ls -lh test_sha256.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
+echo "  - test_hmac.exe ($(ls -lh test_hmac.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
 echo "  - test_aes.exe ($(ls -lh test_aes.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
 echo "  - test_unified.exe ($(ls -lh test_unified.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
 echo "  - test_console.exe ($(ls -lh test_console.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
