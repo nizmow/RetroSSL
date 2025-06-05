@@ -192,4 +192,8 @@ export PATH="$(pwd)/opt/armo64:$PATH"
 Check local docs first. If needed:
 - Open Watcom GitHub: https://github.com/open-watcom/open-watcom-v2
 
+## Project Memories
+
+- We don't care that much about file sizes
+
 **Last updated**: June 2025 (MD5 & SHA1 working, console app builds fixed)
