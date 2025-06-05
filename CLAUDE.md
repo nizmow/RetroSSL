@@ -94,6 +94,10 @@ source setup_watcom.sh
 
 **IMPORTANT**: Always use `build.sh` for compilation. Do NOT provide manual compilation commands to users.
 
+**Human vs Agent Approach:**
+- **Humans**: Run `./build.sh` and troubleshoot as needed
+- **AI Agents**: NEVER provide manual compilation workarounds - always fix `build.sh` instead
+
 ## Mandatory Environment Setup
 
 Before any compilation, ALWAYS ensure:
@@ -163,10 +167,15 @@ Expected: a9993e364706816aba3e25717850c26c9cd0d89d
 - ✅ Build process is documented in the script itself
 
 **When things break:**
-1. Fix the `build.sh` script
-2. Don't provide workarounds or manual commands
-3. Keep the script simple and self-documenting
+1. Fix the `build.sh` script (AI agents should do this automatically)
+2. Don't provide workarounds or manual commands to humans
+3. Keep the script simple and self-documenting  
 4. Test fixes work for both AI and human use
+
+**README.md Focus**: 
+- README.md is optimized for human developers
+- Technical implementation details and agent workflows belong here in CLAUDE.md
+- Keep README.md concise and action-oriented for humans
 
 ## ✅ PROVEN DEVELOPMENT WORKFLOW (June 2025)
 
