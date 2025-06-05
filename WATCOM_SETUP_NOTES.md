@@ -29,6 +29,14 @@ This document captures lessons learned and gotchas encountered while setting up 
 - ✅ **Correct**: Use `wcl386` for consistent behavior
 - **Lesson**: Different tools have different default behaviors
 
+### 6. Console vs GUI Application Build (CRITICAL DISCOVERY - June 2025)
+- ❌ **Wrong**: Using only `-bt=nt` creates GUI applications that fail in console/Wine
+- ✅ **Correct**: Must add `-l=nt` flag to create proper console applications
+- **Problem**: Without `-l=nt`, executables show as "MS-DOS executable, LE" and fail with Wine "winevdm.exe" errors
+- **Solution**: With `-l=nt`, executables show as "PE32 executable (console)" and run correctly
+- **Impact**: Critical for any console-based testing, debugging, or command-line tools
+- **Lesson**: Open Watcom defaults to GUI applications unless explicitly told to build console apps
+
 ## Working Configuration
 
 ### Environment Setup
@@ -39,11 +47,16 @@ export PATH="$(pwd)/opt/armo64:$PATH"
 
 ### Compiler Flags for Win98
 ```bash
+# For console applications (RECOMMENDED)
+wcl386 -bt=nt -l=nt -iopt/h -iopt/h/nt -dWIN32 -d_WIN32 -fe=output.exe input.c
+
+# For GUI applications (if needed)
 wcl386 -bt=nt -iopt/h -iopt/h/nt -dWIN32 -d_WIN32 -fe=output.exe input.c
 ```
 
 ### Flag Meanings
 - `-bt=nt`: Build target = Windows NT (Win98 compatible)
+- `-l=nt`: **CRITICAL** - Build console application (not GUI)
 - `-i<path>`: Include path
 - `-d<macro>`: Define preprocessor macro
 - `-fe=<file>`: Force executable name
@@ -73,11 +86,17 @@ opt/
 
 ## Testing Commands That Work
 ```bash
-# Basic C program
-./opt/armo64/wcl386 -bt=nt -fe=test.exe test.c
+# Basic console application
+./opt/armo64/wcl386 -bt=nt -l=nt -fe=test.exe test.c
 
-# With full flags
-WATCOM="$(pwd)/opt" ./opt/armo64/wcl386 -bt=nt -iopt/h -iopt/h/nt -dWIN32 -d_WIN32 -fe=test.exe test.c
+# Full flags for Windows 98 console app
+WATCOM="$(pwd)/opt" ./opt/armo64/wcl386 -bt=nt -l=nt -iopt/h -iopt/h/nt -dWIN32 -d_WIN32 -fe=test.exe test.c
+
+# Test executable format (should show "PE32 executable (console)")
+file test.exe
+
+# Test with Wine (on macOS)
+wine test.exe
 ```
 
 ## What Didn't Work (Learn From Our Mistakes)
@@ -102,6 +121,13 @@ WATCOM="$(pwd)/opt" ./opt/armo64/wcl386 -bt=nt -iopt/h -iopt/h/nt -dWIN32 -d_WIN
 wcl386 -bt=nt test.c  # Missing WIN32 defines = header errors
 ```
 
+### Failed Approach #4: GUI application instead of console (June 2025)
+```bash
+# This creates GUI applications that fail in console/Wine
+wcl386 -bt=nt -dWIN32 -d_WIN32 test.c  # Missing -l=nt flag
+# Result: "MS-DOS executable, LE" that fails with winevdm.exe errors
+```
+
 ## Future Reference Checklist
 
 When setting up Open Watcom again:
@@ -111,7 +137,30 @@ When setting up Open Watcom again:
 - [ ] Test with simple C program first
 - [ ] Add WIN32 defines for Windows programs
 - [ ] Use wcl386 for simplicity
+- [ ] **CRITICAL**: Add `-l=nt` for console applications
+- [ ] Verify executable format with `file` command
+- [ ] Test with Wine if on macOS/Linux
 - [ ] Verify with basic compilation before complex builds
+
+## Troubleshooting Common Issues
+
+### Problem: "winevdm.exe" errors when running executable
+**Symptoms**: 
+- Executable builds successfully
+- `file executable.exe` shows "MS-DOS executable, LE executable"  
+- Wine fails with winevdm.exe errors
+- Program doesn't run in console
+
+**Solution**: Add `-l=nt` flag to build console application
+```bash
+# Wrong (GUI app)
+wcl386 -bt=nt -dWIN32 -d_WIN32 program.c
+
+# Correct (console app)  
+wcl386 -bt=nt -l=nt -dWIN32 -d_WIN32 program.c
+```
+
+**Verification**: `file program.exe` should show "PE32 executable (console)"
 
 ## Resources
 

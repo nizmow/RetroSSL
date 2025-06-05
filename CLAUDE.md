@@ -120,10 +120,18 @@ export PATH="$(pwd)/opt/armo64:$PATH"
 
 ## ✅ CONFIRMED WORKING STATUS (June 2025)
 
+**Hash Function Implementations**: ✅ **BOTH FULLY FUNCTIONAL**
+
 **SHA1 Implementation**: ✅ **FULLY FUNCTIONAL**
 - Successfully compiled with Open Watcom
 - Produces correct SHA1 hash: `a9993e364706816aba3e25717850c26c9cd0d89d` for input "abc"
-- Executable size: 20KB (excellent for Win98)
+- Executable size: 30KB (excellent for Win98)
+- Wine testing: Working (with minor compatibility warnings)
+
+**MD5 Implementation**: ✅ **FULLY FUNCTIONAL** 
+- Successfully compiled with Open Watcom
+- Produces correct MD5 hash: `900150983cd24fb0d6963f7d28e17f72` for input "abc"
+- Executable size: 30KB (excellent for Win98)
 - Wine testing: Working (with minor compatibility warnings)
 - Build system: `build.sh` reliable, Makefile has PATH issues
 
@@ -134,6 +142,13 @@ RetroSSL SHA1 Test
 Input: "abc"
 SHA1: a9993e364706816aba3e25717850c26c9cd0d89d
 Expected: a9993e364706816aba3e25717850c26c9cd0d89d
+
+RetroSSL MD5 Test
+=================
+Input: "abc"
+MD5: 900150983cd24fb0d6963f7d28e17f72
+Expected: 900150983cd24fb0d6963f7d28e17f72
+✓ MD5 test PASSED!
 ```
 
 **Proven Build Commands:**
@@ -217,10 +232,22 @@ Expected: a9993e364706816aba3e25717850c26c9cd0d89d
 
 ## Critical Flags Learned Through Experience
 
+**CONSOLE APPLICATION BUILD (JUNE 2025 DISCOVERY):**
 - `-bt=nt`: Build target Windows NT (Win98 compatible)
+- `-l=nt`: **CRITICAL** - Creates console application instead of GUI application
 - `-dWIN32 -d_WIN32`: Required for Windows headers
+
+**🚨 MAJOR DISCOVERY: Console vs GUI Applications**
+- **Problem**: Without `-l=nt`, executables build as GUI applications
+- **Symptom**: Wine fails with "winevdm.exe" errors, programs won't run in console
+- **Solution**: Add `-l=nt` flag to create proper Windows console applications
+- **Result**: Executable format changes from "MS-DOS executable, LE" to "PE32 executable (console)"
+- **Impact**: Both SHA1 and MD5 tests now run successfully under Wine and will work on Windows 98 SE
+
+**Other Critical Flags:**
 - Use `wcl386` not `wcc386` for simplicity
 - Set `WATCOM` environment variable (critical for linker)
+- `-fe=filename.exe`: Specify output executable name
 
 ## When Documentation Updates Are Required
 
