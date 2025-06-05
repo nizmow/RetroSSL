@@ -1,6 +1,16 @@
 /*
  * RetroSSL Internal Header for Windows 98 SE
- * Based on BearSSL inner.h, adapted for Open Watcom and Win98
+ * 
+ * Based on BearSSL inner.h (commit 3c04036)
+ * Source: temp/bearssl-analysis/src/inner.h
+ * 
+ * Adaptations for Open Watcom and Win98:
+ * - Added codec utility functions (br_enc32be, br_dec32be, etc.)
+ * - BearSSL compatibility aliases for seamless integration
+ * - Win98-specific #ifdef guards and memory model adaptations
+ * 
+ * Copyright (c) 2025 RetroSSL Project
+ * Original BearSSL code: Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>
  */
 
 #ifndef RETROSSL_INNER_H__

@@ -1,9 +1,16 @@
 /*
- * RetroSSL - AES Small Implementation (Encryption)
- * Based on BearSSL aes_small_enc.c, adapted for Windows 98 SE
+ * RetroSSL AES Small Implementation (Encryption) for Windows 98 SE
  * 
- * Copyright (c) 2025 RetroSSL Project  
- * Based on BearSSL Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>
+ * Based on BearSSL aes_small_enc.c (commit 3c04036)
+ * Source: temp/bearssl-analysis/src/symcipher/aes_small_enc.c
+ * 
+ * Adaptations for Open Watcom and Win98:
+ * - Uses external S-box table from aes_common.c
+ * - 32-bit optimized operations for Pentium-era processors
+ * - Compatible with retrossl_aes_small_encrypt interface
+ * 
+ * Copyright (c) 2025 RetroSSL Project
+ * Original BearSSL code: Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining 
  * a copy of this software and associated documentation files (the

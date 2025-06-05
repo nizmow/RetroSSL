@@ -1,6 +1,16 @@
 /*
- * RetroSSL MD5 hash implementation for Windows 98 SE
- * Based on BearSSL MD5 implementation
+ * RetroSSL MD5 Hash Function for Windows 98 SE
+ * 
+ * Based on BearSSL md5.c (commit 3c04036)
+ * Source: temp/bearssl-analysis/src/hash/md5.c
+ * 
+ * Adaptations for Open Watcom and Win98:
+ * - Updated vtable structure to match br_hash_class specification
+ * - Added BR_HASHDESC_* descriptor flags for proper vtable format
+ * - Preserved original BearSSL function signatures with casting
+ * 
+ * Copyright (c) 2025 RetroSSL Project
+ * Original BearSSL code: Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>
  */
 
 #include "../retrossl_inner.h"

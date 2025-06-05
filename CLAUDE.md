@@ -41,6 +41,8 @@ This project has local documentation that MUST be consulted before external rese
 - **Purpose**: Reference copy for incremental porting to RetroSSL
 - **Version**: Pinned to commit `3c04036` (see setup_dependencies.sh)
 
+**📋 SOURCE MAPPING**: See `BEARSSL_MAPPING.md` for complete 1:1 file mapping and update procedures
+
 **Key directories for porting**:
 - `temp/bearssl-analysis/src/hash/` - Hash functions (SHA1, MD5, SHA256)
 - `temp/bearssl-analysis/src/symcipher/` - Symmetric crypto (AES, DES)

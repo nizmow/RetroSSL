@@ -25,9 +25,13 @@ wine test_md5.exe  # or wine test_sha1.exe
 ./build.sh
 wine test_sha1.exe  # SHA1: a9993e364706816aba3e25717850c26c9cd0d89d
 wine test_md5.exe   # MD5: 900150983cd24fb0d6963f7d28e17f72
+wine test_aes.exe   # AES-128 CBC encryption/decryption 
+wine test_unified.exe # Combined hash + crypto test
 ```
 
 ## Documentation
+
+- **`BEARSSL_MAPPING.md`** - 1:1 source file mapping for tracking upstream changes
 
 - `CLAUDE.md` - AI agent workflow
 - `WATCOM_SETUP_NOTES.md` - Compilation troubleshooting  
