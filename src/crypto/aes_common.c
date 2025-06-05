@@ -96,7 +96,7 @@ retrossl_aes_keysched(uint32_t *skey, const void *key, size_t key_len)
 	
 	/* Copy original key into first nk words of schedule */
 	for (i = 0; i < nk; i++) {
-		skey[i] = retrossl_dec32be((const unsigned char *)key + (i << 2));
+		skey[i] = br_dec32be((const unsigned char *)key + (i << 2));
 	}
 	
 	/* Generate remaining round key words */

@@ -9,12 +9,13 @@ git clone <repository-url>
 cd RetroSSL
 ./setup_dependencies.sh
 ./build.sh
-wine test_md5.exe  # or wine test_sha1.exe
+wine test_aes.exe  # or wine test_md5.exe, wine test_sha1.exe
 ```
 
 ## Status
 
 ✅ **SHA1 & MD5** hash functions (30KB executables)  
+✅ **AES-128 CBC** encryption/decryption (31KB executable)  
 ✅ **Open Watcom** cross-compilation (macOS → Win98)  
 ✅ **Console applications** with Wine testing  
 🔄 **Next**: SHA256, SHA512, SSL/TLS implementation  

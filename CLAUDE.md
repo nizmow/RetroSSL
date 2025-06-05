@@ -11,6 +11,9 @@ This project has local documentation that MUST be consulted before external rese
 3. **Platform/Compatibility**: `docs/watcom/c_readme.md` - Win98 SE support
 4. **Advanced Compilation**: `docs/watcom/programming_guide.md` - Memory models
 
+## Style
+- Always add newlines at the ends of files.
+
 ## Project Context
 
 - **Target**: Windows 98 SE SSL library  
@@ -21,9 +24,10 @@ This project has local documentation that MUST be consulted before external rese
 
 ## Current Status (June 2025)
 
-**Working**: MD5 & SHA1 hash functions (30KB executables each)  
-**Source**: `src/hash/`, `src/retrossl_inner.h`  
-**Tests**: `tests/test_md5.c`, `tests/test_sha1.c`
+**Working**: MD5 & SHA1 hash functions + AES-128 CBC encryption  
+**Executables**: 30-31KB each (Win98 friendly)  
+**Source**: `src/hash/`, `src/crypto/`, `src/retrossl_inner.h`  
+**Tests**: `tests/test_md5.c`, `tests/test_sha1.c`, `tests/test_aes.c`
 - `test_console.exe` - Console version for Wine testing
 - `*.o`, `*.err` - Compilation artifacts
 
@@ -73,10 +77,15 @@ source setup_watcom.sh
 
 ## ✅ Confirmed Working (June 2025)
 
-**MD5 & SHA1**: Both produce correct hashes (30KB executables)
+**Hash Functions**: MD5 & SHA1 produce correct hashes (30KB executables)
 - SHA1: `a9993e364706816aba3e25717850c26c9cd0d89d` for "abc"  
 - MD5: `900150983cd24fb0d6963f7d28e17f72` for "abc"
-- Wine testing: Working (ignore compatibility warnings)
+
+**AES-128 CBC**: Complete encryption/decryption (31KB executable)
+- Key schedule: ✅ Working with test vectors
+- Encryption: ✅ Produces expected ciphertext  
+- Decryption: ✅ Recovers original plaintext
+- Wine testing: All tests pass (ignore compatibility warnings)
 
 ## Environment Setup
 

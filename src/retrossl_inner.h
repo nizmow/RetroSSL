@@ -123,4 +123,8 @@ static inline void br_enc64le(void *dst, uint64_t x) {
 #define br_sha1_ID 2
 #endif
 
+/* AES S-box and inverse S-box (external declarations) */
+extern const unsigned char retrossl_aes_S[256];
+extern const unsigned char retrossl_aes_iS[256];
+
 #endif /* RETROSSL_INNER_H__ */

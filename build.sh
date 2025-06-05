@@ -36,11 +36,10 @@ echo "Compiling SHA1 test..."
 echo "Compiling MD5 test..."
 ./opt/armo64/wcl386 $CFLAGS -fe=test_md5.exe tests/test_md5.c src/codec.c src/hash/md5.c
 
-# Skipping AES for now until we implement all required dependencies
-echo "Skipping AES test for now..."
-# ./opt/armo64/wcl386 $CFLAGS -fe=test_aes.exe tests/test_aes.c src/codec.c \
-#     src/crypto/aes_common.c src/crypto/aes_small_enc.c src/crypto/aes_small_dec.c \
-#     src/crypto/aes_small_cbcenc.c src/crypto/aes_small_cbcdec.c
+echo "Compiling AES test..."
+./opt/armo64/wcl386 $CFLAGS -fe=test_aes.exe tests/test_aes.c src/codec.c \
+    src/crypto/aes_common.c src/crypto/aes_small_enc.c src/crypto/aes_small_dec.c \
+    src/crypto/aes_small_cbcenc.c src/crypto/aes_small_cbcdec.c
 
 # Test unified build (hash only for now)
 echo "Testing unified build (hash only)..."
@@ -53,11 +52,11 @@ cp test_md5.exe test_console.exe
 
 echo "Build complete!"
 echo "Created executables:"
-echo "  - test_sha1.exe"
-echo "  - test_md5.exe"
-echo "  - test_aes.exe"
-echo "  - test_unified.exe"
-echo "  - test_console.exe"
+echo "  - test_sha1.exe ($(ls -lh test_sha1.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
+echo "  - test_md5.exe ($(ls -lh test_md5.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))" 
+echo "  - test_aes.exe ($(ls -lh test_aes.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
+echo "  - test_unified.exe ($(ls -lh test_unified.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
+echo "  - test_console.exe ($(ls -lh test_console.exe 2>/dev/null | awk '{print $5}' || echo 'missing'))"
 
 # Simple verification that files exist
 if [ -f "test_md5.exe" ] && [ -f "test_unified.exe" ]; then

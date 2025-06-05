@@ -1,16 +1,5 @@
 /*
- * RetroSSL SHA1 Hash Function for Windows 98 SE
- * 
- * Based on BearSSL sha1.c (commit 3c04036)
- * Source: temp/bearssl-analysis/src/hash/sha1.c
- * 
- * Adaptations for Open Watcom and Win98:
- * - Updated vtable structure to match br_hash_class specification
- * - Added BR_HASHDESC_* descriptor flags for proper vtable format
- * - Preserved original BearSSL function signatures with casting
- * 
- * Copyright (c) 2025 RetroSSL Project
- * Original BearSSL code: Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>
+ * Copyright (c) 2016 Thomas Pornin <pornin@bolet.org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining 
  * a copy of this software and associated documentation files (the
@@ -184,7 +173,7 @@ br_sha1_set_state(br_sha1_context *cc, const void *stb, uint64_t count)
 	cc->count = count;
 }
 
-/* see retrossl_inner.h */
+/* see bearssl.h */
 const br_hash_class br_sha1_vtable = {
 	sizeof(br_sha1_context),
 	BR_HASHDESC_ID(br_sha1_ID)
