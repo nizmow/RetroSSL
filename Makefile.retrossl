@@ -1,0 +1,33 @@
+# RetroSSL Makefile for Windows 98 SE using Open Watcom
+WATCOM_ROOT = opt
+export WATCOM = $(shell pwd)/$(WATCOM_ROOT)
+export PATH := $(WATCOM_ROOT)/armo64:$(PATH)
+
+CC = wcl386
+CFLAGS = -bt=nt -iopt/h -iopt/h/nt -zq -w4 -ox -dWIN32 -d_WIN32
+
+# Source files
+CODEC_SRC = src/codec.c
+HASH_SRC = src/hash/sha1.c
+TEST_SRC = tests/test_sha1.c
+
+# Object files  
+CODEC_OBJ = src/codec.obj
+HASH_OBJ = src/hash/sha1.obj
+
+# Test program
+test_sha1.exe: $(CODEC_OBJ) $(HASH_OBJ) $(TEST_SRC)
+	$(CC) $(CFLAGS) -fe=$@ $(CODEC_OBJ) $(HASH_OBJ) $(TEST_SRC)
+
+# Compile codec
+$(CODEC_OBJ): $(CODEC_SRC)
+	$(CC) $(CFLAGS) -c -fo=$@ $(CODEC_SRC)
+
+# Compile SHA1
+$(HASH_OBJ): $(HASH_SRC)
+	$(CC) $(CFLAGS) -c -fo=$@ $(HASH_SRC)
+
+clean:
+	rm -f src/*.obj src/hash/*.obj tests/*.exe *.exe *.err
+
+.PHONY: clean

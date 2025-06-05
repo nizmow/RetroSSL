@@ -1,0 +1,42 @@
+; RetroSSL Windows 98 DLL Export Definition
+; Defines the public API for our Win98-compatible SSL library
+
+LIBRARY RETROSSL
+
+EXPORTS
+    ; Hash Functions
+    retrossl_sha1_init
+    retrossl_sha1_update  
+    retrossl_sha1_out
+    retrossl_md5_init
+    retrossl_md5_update
+    retrossl_md5_out
+    
+    ; Symmetric Encryption
+    retrossl_aes_encrypt
+    retrossl_aes_decrypt
+    retrossl_aes_cbc_encrypt
+    retrossl_aes_cbc_decrypt
+    
+    ; RSA Operations  
+    retrossl_rsa_keygen
+    retrossl_rsa_encrypt
+    retrossl_rsa_decrypt
+    retrossl_rsa_sign
+    retrossl_rsa_verify
+    
+    ; SSL/TLS Functions
+    retrossl_client_init
+    retrossl_client_connect
+    retrossl_client_write
+    retrossl_client_read
+    retrossl_client_close
+    
+    ; Certificate Functions
+    retrossl_cert_parse
+    retrossl_cert_verify
+    retrossl_cert_free
+    
+    ; Utility Functions
+    retrossl_version
+    retrossl_error_string
