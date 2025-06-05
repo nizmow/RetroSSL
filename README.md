@@ -40,10 +40,13 @@ make basic_test.exe
 
 ✅ Open Watcom downloaded and extracted  
 ✅ Environment configuration created  
-✅ Basic build system (Makefile) set up  
-🔄 Testing compilation process  
-❌ SSL library selection and integration  
-❌ Win98 compatibility testing  
+✅ SHA1 hash function ported and working  
+✅ Win98 cross-compilation confirmed (20KB executable)  
+✅ BearSSL selected and dependency management set up  
+✅ Git version control with pinned dependencies  
+🔄 Additional hash functions (MD5, SHA256)  
+❌ Full SSL/TLS implementation  
+❌ Win98 compatibility testing on real hardware  
 
 ## Documentation System
 
@@ -61,9 +64,10 @@ For a fresh clone:
 git clone <repository-url>
 cd RetroSSL
 ./setup_dependencies.sh
-source setup_watcom.sh
-make -f Makefile.retrossl test_sha1.exe
+./build.sh
 ```
+
+**Note**: Use `build.sh` for reliable compilation. The Makefile has PATH issues.
 
 ## BearSSL Source Reference
 
