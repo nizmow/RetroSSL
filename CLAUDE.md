@@ -127,11 +127,13 @@ export PATH="$(pwd)/opt/armo64:$PATH"
    - Add prevention measures to this section
 
 **Example of what MUST be documented:**
-- Source code locations (like `bearssl-analysis/`)
+- Source code locations (like `temp/bearssl-analysis/`)
 - Build output directories
-- External tool locations
+- External tool locations (`opt/armo64/`)
 - Downloaded reference materials
 - Test data locations
+- Dependency setup scripts (`setup_dependencies.sh`)
+- Version pins (BearSSL commit `3c04036`)
 
 **Why this matters:**
 - Future Claude sessions are stateless
