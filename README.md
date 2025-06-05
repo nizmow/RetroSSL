@@ -54,9 +54,20 @@ This project includes comprehensive local documentation:
 
 **Important**: Always check local documentation before external resources!
 
+## Quick Start
+
+For a fresh clone:
+```bash
+git clone <repository-url>
+cd RetroSSL
+./setup_dependencies.sh
+source setup_watcom.sh
+make -f Makefile.retrossl test_sha1.exe
+```
+
 ## BearSSL Source Reference
 
-The complete BearSSL source code is available in `bearssl-analysis/` for incremental porting reference.
+The complete BearSSL source code is fetched by `setup_dependencies.sh` at a pinned commit for incremental porting reference.
 
 ## Next Steps
 
