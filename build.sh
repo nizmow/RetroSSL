@@ -19,8 +19,16 @@ fi
 # Build flags for Win98 compatibility
 CFLAGS="-bt=nt -iopt/h -iopt/h/nt -zq -w4 -ox -dWIN32 -d_WIN32"
 
+# Clean previous builds
+echo "Cleaning previous builds..."
+rm -f test_sha1.exe test_console.exe *.o *.err
+
 echo "Compiling SHA1 test..."
-wcl386 $CFLAGS -fe=test_sha1.exe tests/test_sha1.c src/codec.c src/hash/sha1.c
+./opt/armo64/wcl386 $CFLAGS -fe=test_sha1.exe tests/test_sha1.c src/codec.c src/hash/sha1.c
+
+# Create console version for better Wine compatibility
+echo "Creating console version..."
+cp test_sha1.exe test_console.exe
 
 echo "Build complete!"
 echo "Created: test_sha1.exe ($(ls -lh test_sha1.exe | awk '{print $5}'))"

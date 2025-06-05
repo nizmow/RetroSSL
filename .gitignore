@@ -1,5 +1,5 @@
 # External dependencies (fetched by setup script)
-temp/bearssl-analysis/
+temp/
 opt/
 ow-snapshot.tar.xz
 
