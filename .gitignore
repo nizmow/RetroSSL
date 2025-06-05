@@ -3,11 +3,19 @@ temp/
 opt/
 ow-snapshot.tar.xz
 
-# Build artifacts
+# Build artifacts and directories
+build/
 *.obj
 *.exe
 *.err
 *.o
+*.out
+*.tmp
+*.bak
+
+# Package files
+*.tar.gz
+*.zip
 
 # IDE/Editor files
 .vscode/
@@ -20,5 +28,5 @@ ow-snapshot.tar.xz
 .DS_Store
 Thumbs.db
 
-# Test outputs
+# Test outputs  
 tests/*.exe
