@@ -1,54 +1,29 @@
 # Claude Agent Instructions for RetroSSL Project
 
-## 🚨 MANDATORY: Always Check Local Documentation First
+## 🚨 Check Local Documentation First
 
-This project has extensive local documentation that MUST be consulted before making assumptions or asking questions about Open Watcom, Windows 98 compatibility, or build processes.
+This project has local documentation that MUST be consulted before external research.
 
 ## Required Reading Order
 
-### 1. For Any Open Watcom Issues
-**ALWAYS check first**: `WATCOM_SETUP_NOTES.md`
-- Contains all discovered gotchas and solutions
-- Working compiler commands and environment setup
-- Common mistakes and how to avoid them
+1. **Open Watcom Issues**: `WATCOM_SETUP_NOTES.md` - All gotchas and solutions
+2. **C Library Questions**: `docs/watcom/clib_reference.md` - Available functions
+3. **Platform/Compatibility**: `docs/watcom/c_readme.md` - Win98 SE support
+4. **Advanced Compilation**: `docs/watcom/programming_guide.md` - Memory models
 
-### 2. For C Library Questions
-**Check**: `docs/watcom/clib_reference.md`
-- Standard C functions available
-- Memory management approaches
-- Header file requirements
+## Project Context
 
-### 3. For Platform/Compatibility Questions  
-**Check**: `docs/watcom/c_readme.md`
-- Confirms Windows 98 SE support
-- System requirements
-- Installation considerations
+- **Target**: Windows 98 SE SSL library  
+- **Host**: macOS ARM64 cross-compilation
+- **Toolchain**: Open Watcom C/C++ (`opt/armo64/`)
+- **Architecture**: 32-bit x86 (`-bt=nt -l=nt`)
+- **BearSSL source**: `temp/bearssl-analysis/`
 
-### 4. For Advanced Compilation Issues
-**Check**: `docs/watcom/programming_guide.md`
-- Memory models and management
-- Platform-specific compilation
-- Cross-platform development techniques
+## Current Status (June 2025)
 
-## Project Context (Always Remember)
-
-- **Target**: Windows 98 SE SSL library port
-- **Host**: macOS ARM64 cross-compilation  
-- **Toolchain**: Open Watcom C/C++
-- **Architecture**: 32-bit x86 (`-bt=nt`)
-- **Binary location**: `opt/armo64/` (not binnt64 or binl64)
-- **BearSSL source**: `temp/bearssl-analysis/` (cloned reference copy)
-
-## Current Project Structure (June 2025)
-
-**Source Code**:
-- `src/` - RetroSSL implementation
-- `src/hash/` - Hash function implementations (SHA1 working)
-- `src/retrossl_inner.h` - Core header file
-- `tests/test_sha1.c` - SHA1 test (proven working)
-
-**Build Outputs**:
-- `test_sha1.exe` - SHA1 test executable (20KB)
+**Working**: MD5 & SHA1 hash functions (30KB executables each)  
+**Source**: `src/hash/`, `src/retrossl_inner.h`  
+**Tests**: `tests/test_md5.c`, `tests/test_sha1.c`
 - `test_console.exe` - Console version for Wine testing
 - `*.o`, `*.err` - Compilation artifacts
 
@@ -94,88 +69,36 @@ source setup_watcom.sh
 
 **IMPORTANT**: Always use `build.sh` for compilation. Do NOT provide manual compilation commands to users.
 
-**Human vs Agent Approach:**
-- **Humans**: Run `./build.sh` and troubleshoot as needed
-- **AI Agents**: NEVER provide manual compilation workarounds - always fix `build.sh` instead
+## ✅ Confirmed Working (June 2025)
 
-## Mandatory Environment Setup
+**MD5 & SHA1**: Both produce correct hashes (30KB executables)
+- SHA1: `a9993e364706816aba3e25717850c26c9cd0d89d` for "abc"  
+- MD5: `900150983cd24fb0d6963f7d28e17f72` for "abc"
+- Wine testing: Working (ignore compatibility warnings)
 
-Before any compilation, ALWAYS ensure:
+## Environment Setup
+
 ```bash
 export WATCOM="$(pwd)/opt"
 export PATH="$(pwd)/opt/armo64:$PATH"
 ```
 
-## Working Compilation Command
+## Build Process
 
-**DO NOT USE MANUAL COMMANDS. Always use build scripts:**
-```bash
-./build.sh
-```
+**Always use**: `./build.sh` (never manual commands)  
+**AI Agents**: Fix `build.sh` when things break, don't provide workarounds
+## Workflow
 
-**For reference only** (the build script uses):
-```bash
-./opt/armo64/wcl386 -bt=nt -dWIN32 -d_WIN32 -fe=program.exe program.c
-```
+1. **Check local docs** before external research
+2. **Use `./build.sh`** for all compilation  
+3. **Fix build scripts** when things break
+4. **Document discoveries** in reference files
 
-## ✅ CONFIRMED WORKING STATUS (June 2025)
+## Critical Console Application Discovery (June 2025)
 
-**Hash Function Implementations**: ✅ **BOTH FULLY FUNCTIONAL**
-
-**SHA1 Implementation**: ✅ **FULLY FUNCTIONAL**
-- Successfully compiled with Open Watcom
-- Produces correct SHA1 hash: `a9993e364706816aba3e25717850c26c9cd0d89d` for input "abc"
-- Executable size: 30KB (excellent for Win98)
-- Wine testing: Working (with minor compatibility warnings)
-
-**MD5 Implementation**: ✅ **FULLY FUNCTIONAL** 
-- Successfully compiled with Open Watcom
-- Produces correct MD5 hash: `900150983cd24fb0d6963f7d28e17f72` for input "abc"
-- Executable size: 30KB (excellent for Win98)
-- Wine testing: Working (with minor compatibility warnings)
-- Build system: `build.sh` reliable, Makefile has PATH issues
-
-**Test Results:**
-```
-RetroSSL SHA1 Test
-==================
-Input: "abc"
-SHA1: a9993e364706816aba3e25717850c26c9cd0d89d
-Expected: a9993e364706816aba3e25717850c26c9cd0d89d
-
-RetroSSL MD5 Test
-=================
-Input: "abc"
-MD5: 900150983cd24fb0d6963f7d28e17f72
-Expected: 900150983cd24fb0d6963f7d28e17f72
-✓ MD5 test PASSED!
-```
-
-**Proven Build Commands:**
-1. `source setup_watcom.sh` (environment setup)
-2. `./build.sh` (ONLY build method - never use manual commands)
-3. `wine test_console.exe` (testing - works despite Wine warnings)
-
-**Build Script Status**: ✅ **RELIABLE AND MAINTAINED**
-- Automatically cleans previous builds
-- Handles all compilation flags correctly
-- Generates both test executables
-- Eliminates compilation warnings
-- Works for both human developers and AI agents
-
-## Required Workflow
-
-1. **Before suggesting solutions**: Read relevant local documentation
-2. **When compilation fails**: Check `WATCOM_SETUP_NOTES.md` first
-3. **For build issues**: Update `build.sh`, don't provide manual commands
-4. **For new errors**: Document solution in appropriate reference file
-5. **Before external research**: Exhaust local documentation first
-
-## 🎯 HUMAN-FRIENDLY DEVELOPMENT APPROACH
-
-**This project is designed for both AI agents AND human developers:**
-
-**Core Principle**: All compilation should happen through `build.sh`
+**Problem**: Without `-l=nt`, executables fail with Wine "winevdm.exe" errors  
+**Solution**: Build script now uses `-bt=nt -l=nt` for proper console apps  
+**Result**: Executables show as "PE32 executable (console)" and work correctly
 - ✅ Humans can run `./build.sh` reliably
 - ✅ AI agents use the same script
 - ✅ No manual compilation commands to remember
@@ -205,57 +128,25 @@ Expected: 900150983cd24fb0d6963f7d28e17f72
 2. Port to `src/` directory with Win98/Open Watcom compatibility
 3. Add test case to `tests/`
 4. **Update `build.sh` to include new files** (critical!)
-5. Test the updated build script
-6. Document in local files (this file, README.md, etc.)
+## Build Script Maintenance
 
-## 🚨 BUILD SCRIPT MAINTENANCE (CRITICAL)
+**When adding files or fixing compilation:**
+1. **Fix `build.sh`** (never give manual commands)
+2. **Test the changes work** 
+3. **Document discoveries** in reference files
 
-**When compilation breaks or new files are added:**
+## Key Flags
 
-1. **NEVER give users manual compilation commands**
-2. **ALWAYS update `build.sh` instead**
-3. **Test the updated build script works**
-4. **Keep build script simple and reliable**
+- `-bt=nt -l=nt`: Windows NT console application (critical for Wine testing)
+- `-dWIN32 -d_WIN32`: Windows headers
+- `-fe=filename.exe`: Output executable name
+- `wcl386`: Use this (not `wcc386`) for simplicity
 
-**Build script responsibilities:**
-- Environment setup verification
-- Clean previous builds
-- Compile all necessary source files
-- Generate both test executables
-- Provide clear success/failure feedback
+## Documentation Updates
 
-**If build script needs changes:**
-1. Edit `build.sh` directly
-2. Test the changes work
-3. Update documentation if workflow changes
-4. Commit the working build script
-
-## Critical Flags Learned Through Experience
-
-**CONSOLE APPLICATION BUILD (JUNE 2025 DISCOVERY):**
-- `-bt=nt`: Build target Windows NT (Win98 compatible)
-- `-l=nt`: **CRITICAL** - Creates console application instead of GUI application
-- `-dWIN32 -d_WIN32`: Required for Windows headers
-
-**🚨 MAJOR DISCOVERY: Console vs GUI Applications**
-- **Problem**: Without `-l=nt`, executables build as GUI applications
-- **Symptom**: Wine fails with "winevdm.exe" errors, programs won't run in console
-- **Solution**: Add `-l=nt` flag to create proper Windows console applications
-- **Result**: Executable format changes from "MS-DOS executable, LE" to "PE32 executable (console)"
-- **Impact**: Both SHA1 and MD5 tests now run successfully under Wine and will work on Windows 98 SE
-
-**Other Critical Flags:**
-- Use `wcl386` not `wcc386` for simplicity
-- Set `WATCOM` environment variable (critical for linker)
-- `-fe=filename.exe`: Specify output executable name
-
-## When Documentation Updates Are Required
-
-- New compilation errors solved → **Update build.sh AND document**
-- Additional Open Watcom features discovered → **Update build.sh if needed**
-- Platform-specific issues encountered → **Fix in build.sh, document here**
-- SSL library integration challenges found → **Update build.sh for new dependencies**
-- **NEW DIRECTORIES OR FILES ADDED** → **Update build.sh immediately**
+- **New files added** → Update `build.sh` immediately
+- **Compilation errors solved** → Document in `WATCOM_SETUP_NOTES.md`  
+- **Major discoveries** → Update this file
 - **MISSING CRITICAL PATHS** → Add to "Project Context" section
 
 ## 🚨 MANDATORY: Maintain Build Scripts Over Manual Commands
@@ -277,48 +168,17 @@ Expected: 900150983cd24fb0d6963f7d28e17f72
 
 ## 🚨 MANDATORY: Update CLAUDE.md for New Project Structure
 
-**Before working on any new features, ALWAYS:**
+## Next Steps for New Features
 
-1. **Check if new directories/files are referenced** in your work
-2. **If adding external dependencies** (clones, downloads, etc.):
-   - Document the location in "Project Context"
-   - Explain the purpose and structure
-   - Add to relevant workflow sections
-3. **If file paths are mentioned** in documentation but not in CLAUDE.md:
-   - Add them immediately to prevent future confusion
-   - Include full paths, not relative references
-4. **If you find missing documentation** that causes confusion:
-   - Fix it immediately
-   - Add prevention measures to this section
+1. **Reference BearSSL source** in `temp/bearssl-analysis/src/`
+2. **Port to `src/`** with Win98/Open Watcom compatibility  
+3. **Add test** to `tests/`
+4. **Update `build.sh`** to include new files
+5. **Document** in local files
 
-**Example of what MUST be documented:**
-- Source code locations (like `temp/bearssl-analysis/`)
-- Build output directories
-- External tool locations (`opt/armo64/`)
-- Downloaded reference materials
-- Test data locations
-- Dependency setup scripts (`setup_dependencies.sh`)
-- Version pins (BearSSL commit `3c04036`)
+## Resources (Last Resort)
 
-**Why this matters:**
-- Future Claude sessions are stateless
-- Missing path information breaks workflows
-- Prevents repeating discovery work
-- Ensures consistent agent behavior
-
-## External Resources (Last Resort Only)
-
-Only after exhausting local docs:
+Check local docs first. If needed:
 - Open Watcom GitHub: https://github.com/open-watcom/open-watcom-v2
-- Online docs: https://open-watcom.github.io/open-watcom-v2-wikidocs/
 
-**Remember**: This local documentation was created specifically for this project's exact use case. Generic external docs may not apply to our macOS->Win98 cross-compilation scenario.
-
-## 📋 Documentation Maintenance
-
-**Critical**: When project structure changes, update these files immediately:
-1. **This file** (`CLAUDE.md`) - Update project context, file locations, workflows
-2. **README.md** - Update project status, quick start instructions
-3. **`.github/copilot-instructions.md`** - Update if major workflow changes occur
-
-**Last updated**: June 2025 (Build script approach established, SHA1 testing confirmed)
+**Last updated**: June 2025 (MD5 & SHA1 working, console app builds fixed)
