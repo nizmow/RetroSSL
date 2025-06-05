@@ -57,6 +57,8 @@ wcl386 -bt=nt -iopt/h -iopt/h/nt -dWIN32 -d_WIN32 -fe=output.exe input.c
 ### Flag Meanings
 - `-bt=nt`: Build target = Windows NT (Win98 compatible)
 - `-l=nt`: **CRITICAL** - Build console application (not GUI)
+- `-za99`: **CRITICAL** - Enable C99 language features (required for stdint.h)
+- `-zc`: **CRITICAL** - Enable C99 specific language features
 - `-i<path>`: Include path
 - `-d<macro>`: Define preprocessor macro
 - `-fe=<file>`: Force executable name
@@ -119,6 +121,16 @@ wine test.exe
 ```bash
 # Windows headers fail without proper defines
 wcl386 -bt=nt test.c  # Missing WIN32 defines = header errors
+```
+
+### Failed Approach #4: Missing C99 support
+```bash
+# C99 features like stdint.h require special flags
+wcl386 -bt=nt -l=nt test.c  # Missing -za99 and -zc flags = stdint.h errors
+
+# Solution: Add the following flags for C99 support:
+wcl386 -bt=nt -l=nt -za99 -zc test.c  # Enables stdint.h and other C99 features
+```
 ```
 
 ### Failed Approach #4: GUI application instead of console (June 2025)

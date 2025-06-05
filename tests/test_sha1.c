@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "../src/retrossl_inner.h"
+#include "../include/retrossl_hash.h"
 
 int main() {
     /* Test data: "abc" should produce SHA1: a9993e364706816aba3e25717850c26c9cd0d89d */
