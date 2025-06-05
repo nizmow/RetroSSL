@@ -118,9 +118,15 @@ static inline void br_enc64le(void *dst, uint64_t x) {
 #define BR_HASHDESC_MD_PADDING_BE       ((uint32_t)1 << 26)
 #endif
 
-/* SHA1 identifier */
+/* Hash function identifiers (from TLS standard) */
 #ifndef br_sha1_ID
 #define br_sha1_ID 2
+#endif
+#ifndef br_sha224_ID
+#define br_sha224_ID 3
+#endif
+#ifndef br_sha256_ID
+#define br_sha256_ID 4
 #endif
 
 /* AES S-box and inverse S-box (external declarations) */

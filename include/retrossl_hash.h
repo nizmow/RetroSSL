@@ -693,7 +693,6 @@ typedef br_sha224_context br_sha256_context;
  */
 void br_sha256_init(br_sha256_context *ctx);
 
-#ifdef BR_DOXYGEN_IGNORE
 /**
  * \brief Inject some data bytes in a running SHA-256 computation.
  *
@@ -706,9 +705,6 @@ void br_sha256_init(br_sha256_context *ctx);
  * \param len    injected data length (in bytes).
  */
 void br_sha256_update(br_sha256_context *ctx, const void *data, size_t len);
-#else
-#define br_sha256_update      br_sha224_update
-#endif
 
 /**
  * \brief Compute SHA-256 output.
