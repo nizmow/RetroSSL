@@ -117,8 +117,7 @@ br_sha2small_round(const unsigned char *buf, uint32_t *val)
 #undef SHA2_STEP
 }
 
-/* see retrossl_hash.h */
-void
+static void
 sha2small_update(br_sha224_context *cc, const void *data, size_t len)
 {
 	const unsigned char *buf;
@@ -145,29 +144,27 @@ sha2small_update(br_sha224_context *cc, const void *data, size_t len)
 	}
 }
 
-/* see retrossl_hash.h */
-void
+static void
 sha2small_out(const br_sha224_context *cc, void *dst, int num)
 {
-	br_sha224_context cc2;
 	unsigned char buf[64];
-	size_t ptr, k;
+	uint32_t val[8];
+	size_t ptr;
 
-	cc2 = *cc;
-	ptr = (size_t)cc2.count & 63;
+	ptr = (size_t)cc->count & 63;
+	memcpy(buf, cc->buf, ptr);
+	memcpy(val, cc->val, sizeof val);
 	buf[ptr ++] = 0x80;
 	if (ptr > 56) {
 		memset(buf + ptr, 0, 64 - ptr);
-		br_sha2small_round(buf, cc2.val);
+		br_sha2small_round(buf, val);
 		memset(buf, 0, 56);
 	} else {
 		memset(buf + ptr, 0, 56 - ptr);
 	}
-	br_enc64be(buf + 56, cc2.count << 3);
-	br_sha2small_round(buf, cc2.val);
-	for (k = 0; k < (size_t)num; k ++) {
-		br_enc32be((unsigned char *)dst + (k << 2), cc2.val[k]);
-	}
+	br_enc64be(buf + 56, cc->count << 3);
+	br_sha2small_round(buf, val);
+	br_range_enc32be(dst, val, num);
 }
 
 /* see retrossl_hash.h */
@@ -197,7 +194,7 @@ br_sha224_out(const br_sha224_context *cc, void *dst)
 uint64_t
 br_sha224_state(const br_sha224_context *cc, void *dst)
 {
-	memcpy(dst, cc->val, sizeof cc->val);
+	br_range_enc32be(dst, cc->val, 8);
 	return cc->count;
 }
 
@@ -205,7 +202,7 @@ br_sha224_state(const br_sha224_context *cc, void *dst)
 void
 br_sha224_set_state(br_sha224_context *cc, const void *stb, uint64_t count)
 {
-	memcpy(cc->val, stb, sizeof cc->val);
+	br_range_dec32be(cc->val, 8, stb);
 	cc->count = count;
 }
 
@@ -230,6 +227,20 @@ void
 br_sha256_out(const br_sha256_context *cc, void *dst)
 {
 	sha2small_out((const br_sha224_context *)cc, dst, 8);
+}
+
+/* see retrossl_hash.h */
+uint64_t
+br_sha256_state(const br_sha256_context *cc, void *dst)
+{
+	return br_sha224_state((const br_sha224_context *)cc, dst);
+}
+
+/* see retrossl_hash.h */
+void
+br_sha256_set_state(br_sha256_context *cc, const void *stb, uint64_t count)
+{
+	br_sha224_set_state((br_sha224_context *)cc, stb, count);
 }
 
 
@@ -262,7 +273,7 @@ const br_hash_class br_sha256_vtable = {
 	(void (*)(const br_hash_class **))&br_sha256_init,
 	(void (*)(const br_hash_class **, const void *, size_t))&br_sha256_update,
 	(void (*)(const br_hash_class *const *, void *))&br_sha256_out,
-	(uint64_t (*)(const br_hash_class *const *, void *))&br_sha224_state,
+	(uint64_t (*)(const br_hash_class *const *, void *))&br_sha256_state,
 	(void (*)(const br_hash_class **, const void *, uint64_t))
-		&br_sha224_set_state
+		&br_sha256_set_state
 };
