@@ -56,7 +56,7 @@ void br_i31_from_monty(uint32_t *x, const uint32_t *m, uint32_t m0i);
 void br_i31_zero(uint32_t *x, uint32_t bit_len);
 uint32_t br_i31_sub(uint32_t *a, const uint32_t *b, uint32_t ctl);
 uint32_t br_i31_add(uint32_t *a, const uint32_t *b, uint32_t ctl);
-uint32_t br_i31_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m);
+void br_i31_muladd_small(uint32_t *x, uint32_t z, const uint32_t *m);
 
 #ifdef __cplusplus
 }

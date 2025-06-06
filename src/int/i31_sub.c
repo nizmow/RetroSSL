@@ -1,26 +1,23 @@
 #include "retrossl_rsa.h"
 #include "retrossl_inner.h"
 
+/* see inner.h */
 uint32_t
-br_i31_sub(a, b, ctl)
-    uint32_t *a;
-    const uint32_t *b;
-    uint32_t ctl;
+br_i31_sub(uint32_t *a, const uint32_t *b, uint32_t ctl)
 {
-    uint32_t cc;
-    size_t u, m;
+	uint32_t cc;
+	size_t u, m;
 
-    cc = 0;
-    m = (a[0] + 63) >> 5;
-    for (u = 1; u < m; u++) {
-        uint32_t aw, bw;
-        uint64_t cw;
+	cc = 0;
+	m = (a[0] + 63) >> 5;
+	for (u = 1; u < m; u ++) {
+		uint32_t aw, bw, naw;
 
-        aw = a[u];
-        bw = MUX(ctl, b[u], 0);
-        cw = (uint64_t)aw - (uint64_t)bw - cc;
-        a[u] = (uint32_t)cw & 0x7FFFFFFF;
-        cc = (uint32_t)(cw >> 63);
-    }
-    return cc;
+		aw = a[u];
+		bw = b[u];
+		naw = aw - bw - cc;
+		cc = naw >> 31;
+		a[u] = MUX(ctl, naw & 0x7FFFFFFF, aw);
+	}
+	return cc;
 }

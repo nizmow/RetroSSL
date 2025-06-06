@@ -69,25 +69,44 @@ br_i31_modpow_opt(x, e, elen, m, m0i, tmp, twlen)
     /* Convert base to Montgomery domain */
     br_i31_to_monty(x, m);
     
+    /* Convert result to Montgomery domain */
+    br_i31_to_monty(t1, m);
+    
     /* Square-and-multiply */
     {
         size_t k;
+        int first_bit = 1;
+        
         for (k = 0; k < elen; k++) {
             unsigned char eb;
             int i;
             
-            eb = e[elen - 1 - k];
+            eb = e[k];
             for (i = 7; i >= 0; i--) {
                 uint32_t ctl;
+                
+                ctl = (eb >> i) & 1;
+                
+                /* Skip leading zeros */
+                if (first_bit) {
+                    if (ctl == 0) {
+                        continue;
+                    }
+                    first_bit = 0;
+                    /* First bit is 1, so result = base */
+                    br_ccopy(1, t1, x, (mlen + 1) * sizeof(uint32_t));
+                    continue;
+                }
                 
                 /* Square result */
                 br_i31_montymul(t2, t1, t1, m, m0i);
                 br_ccopy(1, t1, t2, (mlen + 1) * sizeof(uint32_t));
                 
                 /* Multiply by base if bit is set */
-                ctl = (eb >> i) & 1;
-                br_i31_montymul(t2, t1, x, m, m0i);
-                br_ccopy(ctl, t1, t2, (mlen + 1) * sizeof(uint32_t));
+                if (ctl) {
+                    br_i31_montymul(t2, t1, x, m, m0i);
+                    br_ccopy(1, t1, t2, (mlen + 1) * sizeof(uint32_t));
+                }
             }
         }
     }

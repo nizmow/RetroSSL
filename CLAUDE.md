@@ -1,5 +1,26 @@
 # Claude Agent Instructions for RetroSSL Project
 
+## 🚨 PROJECT GOAL: MINIMAL BEARSSL PORT
+
+**RetroSSL is a minimal port of BearSSL to Open Watcom C/C++ for Windows 98 SE.**
+
+### CORE PRINCIPLE: BearSSL First, Always
+- **ALWAYS** start with original BearSSL source from `temp/bearssl-analysis/src/`
+- **COPY** BearSSL implementations as directly as possible
+- **ONLY** modify for Open Watcom compiler compatibility
+- **DO NOT** implement crypto algorithms from scratch
+- **PRESERVE** BearSSL's structure, logic, and algorithms exactly
+- **MINIMIZE** diffs - focus on compilation fixes, not improvements
+
+### Development Approach
+1. **Find BearSSL source**: Look in `temp/bearssl-analysis/src/` first
+2. **Copy directly**: Start with exact BearSSL code  
+3. **Fix compilation**: Make minimal changes for Open Watcom
+4. **Test**: Verify functionality matches BearSSL behavior
+5. **Document**: Note changes made and why
+
+**When in doubt: Check BearSSL source first. Innovation is NOT the goal - compatibility is.**
+
 ## 🚨 Check Local Documentation First
 
 This project has local documentation that MUST be consulted before external research.
@@ -24,17 +45,16 @@ This project has local documentation that MUST be consulted before external rese
 
 ## Current Status (June 2025)
 
-**Working**: MD5 & SHA1 hash functions + AES-128 CBC encryption  
+**Working**: Hash functions (SHA1, MD5, SHA256), HMAC, AES-128, RSA i31 (90%)
 **Executables**: 30-31KB each (Win98 friendly)  
-**Source**: `src/hash/`, `src/crypto/`, `src/retrossl_inner.h`  
-**Tests**: `tests/test_md5.c`, `tests/test_sha1.c`, `tests/test_aes.c`
-- `test_console.exe` - Console version for Wine testing
-- `*.o`, `*.err` - Compilation artifacts
+**Source**: `src/hash/`, `src/crypto/`, `src/int/`, `src/rsa/`
+**Tests**: All major crypto components have test programs
 
-**Key Scripts**:
-- `build.sh` - **RELIABLE** build script (use this)
-- `setup_watcom.sh` - Environment configuration
-- `setup_dependencies.sh` - Fresh clone setup
+**Build System**: Professional Makefile with:
+- Temp/release directory organization
+- Version tagging with commit hashes  
+- MD5 checksums and manifest generation
+- Automated packaging
 
 ## BearSSL Reference Source Location
 
@@ -50,6 +70,7 @@ This project has local documentation that MUST be consulted before external rese
 **Key directories for porting**:
 - `temp/bearssl-analysis/src/hash/` - Hash functions (SHA1, MD5, SHA256)
 - `temp/bearssl-analysis/src/symcipher/` - Symmetric crypto (AES, DES)
+- `temp/bearssl-analysis/src/int/` - Big integer arithmetic (i31, i32)
 - `temp/bearssl-analysis/src/rsa/` - RSA operations
 - `temp/bearssl-analysis/src/ssl/` - SSL/TLS protocol engine
 - `temp/bearssl-analysis/src/x509/` - Certificate handling
@@ -69,131 +90,93 @@ This script will:
 
 **Then proceed with normal workflow:**
 ```bash
-source setup_watcom.sh
-./build.sh
+make all
 ```
-
-**IMPORTANT**: Always use `build.sh` for compilation. Do NOT provide manual compilation commands to users.
 
 ## ✅ Confirmed Working (June 2025)
 
-**Hash Functions**: MD5 & SHA1 produce correct hashes (30KB executables)
-- SHA1: `a9993e364706816aba3e25717850c26c9cd0d89d` for "abc"  
-- MD5: `900150983cd24fb0d6963f7d28e17f72` for "abc"
+**Hash Functions**: SHA1, MD5, SHA256 - all produce correct hashes
+**MAC**: HMAC with SHA1, MD5, SHA256 - test vectors pass
+**Symmetric Crypto**: AES-128 CBC encryption/decryption working
+**Big Integer**: i31 arithmetic (decode, encode, ninv31, bit_length)
+**RSA**: Montgomery arithmetic 90% complete (needs final debugging)
 
-**AES-128 CBC**: Complete encryption/decryption (31KB executable)
-- Key schedule: ✅ Working with test vectors
-- Encryption: ✅ Produces expected ciphertext  
-- Decryption: ✅ Recovers original plaintext
-- Wine testing: All tests pass (ignore compatibility warnings)
+**Build System**: Professional Makefile handles all components automatically
 
 ## Environment Setup
 
-```bash
-export WATCOM="$(pwd)/opt"
-export PATH="$(pwd)/opt/armo64:$PATH"
-```
+Modern build system handles this automatically via Makefile.
 
 ## Build Process
 
-**Always use**: `./build.sh` (never manual commands)  
-**AI Agents**: Fix `build.sh` when things break, don't provide workarounds
-## Workflow
+**Always use**: `make all` or `make tests`
+**Individual tests**: `make build/temp/test_<component>.exe`
+**Release build**: `make release`
 
-1. **Check local docs** before external research
-2. **Use `./build.sh`** for all compilation  
-3. **Fix build scripts** when things break
-4. **Document discoveries** in reference files
+## Common Open Watcom Compatibility Changes
+
+When porting BearSSL code:
+1. **Function declarations**: Use K&R style parameter lists
+2. **64-bit types**: `uint64_t` works but may need explicit casts
+3. **Inline functions**: Use `static inline` in headers
+4. **Macros**: BearSSL's constant-time macros work directly
+5. **Memory operations**: `memmove`, `memcmp` available
+6. **Division**: Simple 64/32 division works for br_div/br_rem
 
 ## Critical Console Application Discovery (June 2025)
 
-**Problem**: Without `-l=nt`, executables fail with Wine "winevdm.exe" errors  
-**Solution**: Build script now uses `-bt=nt -l=nt` for proper console apps  
-**Result**: Executables show as "PE32 executable (console)" and work correctly
-- ✅ Humans can run `./build.sh` reliably
-- ✅ AI agents use the same script
-- ✅ No manual compilation commands to remember
-- ✅ Build process is documented in the script itself
-
-**When things break:**
-1. Fix the `build.sh` script (AI agents should do this automatically)
-2. Don't provide workarounds or manual commands to humans
-3. Keep the script simple and self-documenting  
-4. Test fixes work for both AI and human use
-
-**README.md Focus**: 
-- README.md is optimized for human developers
-- Technical implementation details and agent workflows belong here in CLAUDE.md
-- Keep README.md concise and action-oriented for humans
+**Problem**: Without `-l=nt`, executables fail with Wine errors  
+**Solution**: Makefile uses `-bt=nt -l=nt` for proper console apps  
+**Result**: Executables work correctly in Wine testing environment
 
 ## ✅ PROVEN DEVELOPMENT WORKFLOW (June 2025)
 
 **For building and testing:**
-1. `source setup_watcom.sh` (environment setup)
-2. `./build.sh` (ALWAYS use this - never manual commands)
-3. `wine test_console.exe` (testing on macOS)
-4. Verify expected SHA1 output: `a9993e364706816aba3e25717850c26c9cd0d89d`
+1. `make all` (builds all components)
+2. `make tests` (builds test programs)
+3. `wine build/temp/test_<component>.exe` (testing on macOS)
 
 **For adding new features:**
-1. Reference BearSSL source in `temp/bearssl-analysis/src/`
-2. Port to `src/` directory with Win98/Open Watcom compatibility
-3. Add test case to `tests/`
-4. **Update `build.sh` to include new files** (critical!)
-## Build Script Maintenance
+1. **Reference BearSSL source** in `temp/bearssl-analysis/src/`
+2. **Copy implementation** to appropriate `src/` directory
+3. **Adapt for Open Watcom** (minimal changes only)
+4. **Add test case** to `tests/`
+5. **Update Makefile** if needed for new source files
+6. **Test functionality** matches BearSSL behavior
 
-**When adding files or fixing compilation:**
-1. **Fix `build.sh`** (never give manual commands)
-2. **Test the changes work** 
-3. **Document discoveries** in reference files
+## Workflow
 
-## Key Flags
+1. **Check local docs** before external research
+2. **Use BearSSL source** as starting point always
+3. **Minimize changes** - only fix compilation issues
+4. **Test thoroughly** to ensure correct behavior
+5. **Document minimal diffs** and reasoning
+
+## Key Flags (Handled by Makefile)
 
 - `-bt=nt -l=nt`: Windows NT console application (critical for Wine testing)
 - `-dWIN32 -d_WIN32`: Windows headers
-- `-fe=filename.exe`: Output executable name
-- `wcl386`: Use this (not `wcc386`) for simplicity
+- `-za99`: C99 compatibility mode
+- `-ox`: Optimize for size (Win98 friendly)
 
 ## Documentation Updates
 
-- **New files added** → Update `build.sh` immediately
-- **Compilation errors solved** → Document in `WATCOM_SETUP_NOTES.md`  
+- **New BearSSL ports** → Document in commit messages
+- **Compilation fixes** → Add to `WATCOM_SETUP_NOTES.md` if significant  
 - **Major discoveries** → Update this file
-- **MISSING CRITICAL PATHS** → Add to "Project Context" section
-
-## 🚨 MANDATORY: Maintain Build Scripts Over Manual Commands
-
-**NEVER provide manual compilation commands. Always:**
-
-1. **Update `build.sh`** to handle new requirements
-2. **Test the updated script** works correctly
-3. **Document changes** in commit messages and this file
-4. **Keep it simple** so humans can understand and modify it
-
-**Why this approach:**
-- ✅ Consistent builds for all developers (human and AI)
-- ✅ No need to remember complex flag combinations
-- ✅ Easy to maintain and update
-- ✅ Self-documenting build process
-- ✅ Prevents manual command errors
-- ✅ Works in any environment (CI, local, containers)
-
-## 🚨 MANDATORY: Update CLAUDE.md for New Project Structure
-
-## Next Steps for New Features
-
-1. **Reference BearSSL source** in `temp/bearssl-analysis/src/`
-2. **Port to `src/`** with Win98/Open Watcom compatibility  
-3. **Add test** to `tests/`
-4. **Update `build.sh`** to include new files
-5. **Document** in local files
+- **Build changes** → Update Makefile and test
 
 ## Resources (Last Resort)
 
-Check local docs first. If needed:
+Check local docs and BearSSL source first. If needed:
 - Open Watcom GitHub: https://github.com/open-watcom/open-watcom-v2
+- BearSSL documentation: Review `temp/bearssl-analysis/` thoroughly
 
 ## Project Memories
 
-- We don't care that much about file sizes
+- Minimal BearSSL port - stay true to original implementations
+- Professional build system with versioning and packaging
+- All major crypto primitives working or nearly complete
+- Focus on compatibility, not innovation
 
-**Last updated**: June 2025 (MD5 & SHA1 working, console app builds fixed)
+**Last updated**: June 2025 (RSA Montgomery arithmetic 90% complete)

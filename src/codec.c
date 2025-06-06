@@ -44,3 +44,22 @@ void br_range_enc32le(void *dst, const uint32_t *v, size_t num) {
         buf += 4;
     }
 }
+
+/* see retrossl_inner.h */
+void
+br_ccopy(uint32_t ctl, void *dst, const void *src, size_t len)
+{
+	unsigned char *d;
+	const unsigned char *s;
+
+	d = dst;
+	s = src;
+	while (len -- > 0) {
+		uint32_t x, y;
+
+		x = *s ++;
+		y = *d;
+		*d = y ^ (-ctl & (x ^ y));  /* Inline MUX implementation */
+		d ++;
+	}
+}
