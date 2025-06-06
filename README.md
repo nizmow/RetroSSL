@@ -37,16 +37,11 @@ make all test
 # Quick development build and test
 make dev test
 
-# Individual component testing
-make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa
-
 # Build all development targets
 make all
 
-# Test OpenSSL-compatible command-line tools
-echo "abc" | wine build/temp/retrossl.exe md5
-echo "abc" | wine build/temp/retrossl.exe sha1
-echo "abc" | wine build/temp/retrossl.exe sha256
+# Individual component testing
+make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa
 
 # Check executable sizes
 make sizes
@@ -152,39 +147,26 @@ RetroSSL/
 - **Cross-platform**: Works on Windows 98 SE via Wine testing
 - **Professional output**: Hex-encoded hashes matching OpenSSL format
 
-## Example Output
+## Testing
+
+RetroSSL includes comprehensive test suites and OpenSSL interoperability verification. See **[TESTING.md](TESTING.md)** for detailed testing procedures, including:
+
+- OpenSSL compatibility testing for hash functions
+- RSA interoperability validation  
+- Platform compatibility verification
+- Cryptographic test vectors
+- Performance and security testing
+
+### Quick Test
 
 ```bash
-$ make test-md5
-RetroSSL MD5 Test
-=================
-Input: "abc"
-MD5: 900150983cd24fb0d6963f7d28e17f72
-Expected: 900150983cd24fb0d6963f7d28e17f72
-✓ MD5 test PASSED!
+# Run all tests
+make all test
 
-$ echo "abc" | wine build/temp/retrossl.exe md5
-0bee89b07a248e27c83fc3d5951213c1
-
-$ echo "abc" | wine build/temp/retrossl.exe sha1  
-03cfd743661f07975fa2f1220c5194cbaff48451
-
-$ wine build/temp/retrossl.exe version
-RetroSSL 0.1.0
-Built: 0.1.0-20250606-0946-4caad62
-Target: Windows 98 SE (i386)
-Compiler: Open Watcom C/C++
-Based on: BearSSL (minimal port)
-
-$ make test-rsa
-RetroSSL RSA Test
-=================
-Testing basic i31 decode/encode functions...
-Input: 01 23 45 67 
-Decoded x[0] (bit length): 24
-Decoded x[1]: 0x01234567
-Re-encoded: 01 23 45 67 
-PASS: Round-trip encode/decode successful
+# Test OpenSSL compatibility
+printf "abc" | wine build/temp/retrossl.exe sha256
+printf "abc" | openssl sha256
+# Both should output: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
 ```
 
 ## Build Artifacts
@@ -218,6 +200,7 @@ Run `./setup_dependencies.sh` to automatically install all requirements.
 
 ## Documentation
 
+- **[TESTING.md](TESTING.md)** - Comprehensive testing procedures and OpenSSL interoperability
 - **[VERSION](VERSION)** - Semantic versioning and feature tracking
 - **[BEARSSL_MAPPING.md](BEARSSL_MAPPING.md)** - Source file mapping for upstream tracking
 - **[CLAUDE.md](CLAUDE.md)** - AI agent workflow documentation  
