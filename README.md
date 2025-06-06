@@ -20,12 +20,13 @@ make all test
 - **Hash Functions**: SHA1, MD5, SHA256 with full test vectors
 - **Message Authentication**: HMAC-SHA1, HMAC-SHA256 (RFC 2202 compliant)
 - **Symmetric Encryption**: AES-128 CBC with NIST test vectors
-- **Asymmetric Cryptography**: RSA i31 big integer arithmetic (foundation)
+- **Asymmetric Cryptography**: Complete RSA public key operations with OpenSSL interoperability
+- **SSL/TLS Client API**: BearSSL-compatible client context and engine structures
 - **Command-Line Tools**: OpenSSL-compatible `retrossl` utility
 
 ### 🔄 **In Development**
-- RSA modular exponentiation and public key operations
-- SSL/TLS handshake protocol implementation
+- SSL/TLS handshake protocol implementation (client-side)
+- Socket I/O integration for real HTTPS connections
 
 ### 📦 **Release Management**
 - **Version**: 0.1.0 (see [VERSION](VERSION) file)
@@ -44,7 +45,7 @@ make dev test
 make all
 
 # Individual component testing
-make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa
+make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa test-ssl
 
 # Check executable sizes
 make sizes
@@ -88,6 +89,7 @@ cat build/release/MANIFEST.txt
 - `test-hmac` - HMAC message authentication test
 - `test-aes` - AES-128 CBC encryption test
 - `test-rsa` - RSA big integer arithmetic test
+- `test-ssl` - SSL client API and engine structures test
 
 #### **OpenSSL-Compatible Command-Line Tools**
 - `retrossl md5` - Compute MD5 hash from stdin
@@ -113,7 +115,8 @@ RetroSSL/
 │   ├── mac/           # Message authentication codes
 │   ├── crypto/        # Symmetric encryption
 │   ├── rsa/           # RSA public key cryptography
-│   └── int/           # Big integer arithmetic
+│   ├── int/           # Big integer arithmetic
+│   └── ssl/           # SSL/TLS client implementation
 ├── include/           # Header files
 ├── tests/             # Test programs
 ├── tools/             # Command-line utilities
@@ -139,10 +142,18 @@ RetroSSL/
 - **Memory-efficient**: Small-table AES implementation
 
 ### **Asymmetric Cryptography (RSA)**
-- **i31 arithmetic**: 31-bit limbs in 32-bit words
+- **Complete RSA implementation**: Public key operations with BearSSL compatibility
+- **Montgomery arithmetic**: Optimized modular exponentiation
+- **i31 arithmetic**: 31-bit limbs in 32-bit words for efficiency
 - **Constant-time**: Side-channel resistant operations
-- **Modular arithmetic**: Decode, encode, bit length, modular inverse
-- **Foundation ready**: Prepared for full RSA implementation
+- **OpenSSL interoperability**: Verified with real RSA keys and signatures
+
+### **SSL/TLS Client API**
+- **BearSSL-compatible structures**: Client context and engine implementation
+- **Buffer management**: Flexible mono/bidirectional I/O buffering
+- **State management**: Complete SSL engine state tracking
+- **Version negotiation**: TLS 1.0-1.2 protocol support
+- **Ready for HTTP integration**: Clean separation of SSL and application layers
 
 ### **Command-Line Tools**
 - **OpenSSL Compatible**: Drop-in replacement for basic OpenSSL commands

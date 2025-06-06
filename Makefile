@@ -54,13 +54,18 @@ RSA_SRCS = src/rsa/rsa_i31_pub.c \
            src/int/i31_add.c \
            src/int/i31_muladd.c
 
+SSL_SRCS = src/ssl/ssl_engine.c \
+           src/ssl/ssl_client.c \
+           src/ssl/sslio.c
+
 # Test source files
 TEST_SRCS = tests/test_sha1.c \
             tests/test_md5.c \
             tests/test_sha256.c \
             tests/test_hmac.c \
             tests/test_aes.c \
-            tests/test_rsa.c
+            tests/test_rsa.c \
+            tests/test_ssl_basic.c
 
 # Output executables
 TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
@@ -69,6 +74,7 @@ TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
             $(TEMP_DIR)/test_hmac.exe \
             $(TEMP_DIR)/test_aes.exe \
             $(TEMP_DIR)/test_rsa.exe \
+            $(TEMP_DIR)/test_ssl_basic.exe \
             $(TEMP_DIR)/retrossl.exe
 
 RELEASE_EXES = $(RELEASE_DIR)/retrossl_sha1_$(BUILD_TAG).exe \
@@ -149,6 +155,9 @@ $(TEMP_DIR)/test_aes.exe: tests/test_aes.c $(CODEC_SRCS) $(CRYPTO_SRCS) | $(TEMP
 $(TEMP_DIR)/test_rsa.exe: tests/test_rsa.c $(CODEC_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
+$(TEMP_DIR)/test_ssl_basic.exe: tests/test_ssl_basic.c $(CODEC_SRCS) $(SSL_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
 $(TEMP_DIR)/retrossl.exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
@@ -190,6 +199,8 @@ test: $(TEST_EXES)
 	$(WINE) $(TEMP_DIR)/test_aes.exe
 	@echo "Testing RSA..."
 	$(WINE) $(TEMP_DIR)/test_rsa.exe
+	@echo "Testing SSL basic..."
+	$(WINE) $(TEMP_DIR)/test_ssl_basic.exe
 	@echo "All tests completed!"
 
 # Individual test runs
@@ -210,6 +221,9 @@ test-aes: $(TEMP_DIR)/test_aes.exe
 
 test-rsa: $(TEMP_DIR)/test_rsa.exe
 	$(WINE) $(TEMP_DIR)/test_rsa.exe
+
+test-ssl: $(TEMP_DIR)/test_ssl_basic.exe
+	$(WINE) $(TEMP_DIR)/test_ssl_basic.exe
 
 # Release validation
 test-release: release

@@ -1,0 +1,126 @@
+#ifndef RETROSSL_SSL_H__
+#define RETROSSL_SSL_H__
+
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Buffer size constants (from BearSSL) */
+#define BR_SSL_BUFSIZE_INPUT    (16384 + 325)
+#define BR_SSL_BUFSIZE_OUTPUT   (16384 + 85)
+#define BR_SSL_BUFSIZE_MONO     BR_SSL_BUFSIZE_INPUT
+#define BR_SSL_BUFSIZE_BIDI     (BR_SSL_BUFSIZE_INPUT + BR_SSL_BUFSIZE_OUTPUT)
+
+/* Protocol versions */
+#define BR_SSL30   0x0300
+#define BR_TLS10   0x0301
+#define BR_TLS11   0x0302
+#define BR_TLS12   0x0303
+
+/* Error constants */
+#define BR_ERR_OK                      0
+#define BR_ERR_BAD_PARAM               1
+#define BR_ERR_BAD_STATE               2
+#define BR_ERR_UNSUPPORTED_VERSION     3
+#define BR_ERR_BAD_VERSION             4
+#define BR_ERR_BAD_LENGTH              5
+#define BR_ERR_TOO_LARGE               6
+#define BR_ERR_BAD_MAC                 7
+#define BR_ERR_NO_RANDOM               8
+#define BR_ERR_UNKNOWN_TYPE            9
+#define BR_ERR_UNEXPECTED              10
+
+/* Engine state flags */
+#define BR_SSL_CLOSED      0x0001
+#define BR_SSL_SENDREC     0x0002
+#define BR_SSL_RECVREC     0x0004
+#define BR_SSL_SENDAPP     0x0008
+#define BR_SSL_RECVAPP     0x0010
+
+/* Forward declarations */
+typedef struct br_ssl_session_parameters_ br_ssl_session_parameters;
+typedef struct br_ssl_engine_context_ br_ssl_engine_context;
+typedef struct br_ssl_client_context_ br_ssl_client_context;
+
+/* Session parameters structure */
+struct br_ssl_session_parameters_ {
+    unsigned char session_id[32];
+    unsigned char session_id_len;
+    uint16_t version;
+    uint16_t cipher_suite;
+    unsigned char master_secret[48];
+};
+
+/* SSL engine context (core of both client and server) */
+struct br_ssl_engine_context_ {
+    /* Buffer management */
+    unsigned char *ibuf, *obuf;
+    size_t ibuf_len, obuf_len;
+    
+    /* Session state */
+    br_ssl_session_parameters session;
+    
+    /* Protocol state */
+    unsigned version_min;
+    unsigned version_max; 
+    unsigned version_out;
+    unsigned reneg;
+    
+    /* Server name for SNI */
+    char server_name[255];
+    
+    /* Current state */
+    unsigned state;
+    int last_error;
+    
+    /* Handshake functions */
+    void (*hs_init)(br_ssl_engine_context *eng);
+    void (*hs_run)(br_ssl_engine_context *eng);
+    
+    /* Record processing */
+    unsigned char *record_buf;
+    size_t record_len;
+    size_t record_ptr;
+    
+    /* Crypto context placeholder */
+    void *crypto_ctx;
+};
+
+/* SSL client context */
+struct br_ssl_client_context_ {
+    /* The encapsulated engine context (MUST be first) */
+    br_ssl_engine_context eng;
+    
+    /* Client-specific configuration */
+    uint16_t min_clienthello_len;
+    uint32_t hashes;
+    int server_curve;
+    unsigned char auth_type;
+    unsigned char hash_id;
+};
+
+/* Core engine functions */
+void br_ssl_engine_set_buffer(br_ssl_engine_context *cc,
+    void *iobuf, size_t iobuf_len, int bidi);
+
+int br_ssl_engine_last_error(const br_ssl_engine_context *cc);
+unsigned br_ssl_engine_current_state(const br_ssl_engine_context *cc);
+void br_ssl_engine_fail(br_ssl_engine_context *cc, int err);
+
+/* Client functions */
+void br_ssl_client_zero(br_ssl_client_context *cc);
+int br_ssl_client_reset(br_ssl_client_context *cc,
+    const char *server_name, int resume_session);
+
+/* Simple initialization (no certificate validation) */
+void br_ssl_client_init_minimal(br_ssl_client_context *cc);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
