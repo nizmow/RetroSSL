@@ -68,14 +68,16 @@ TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
             $(TEMP_DIR)/test_sha256.exe \
             $(TEMP_DIR)/test_hmac.exe \
             $(TEMP_DIR)/test_aes.exe \
-            $(TEMP_DIR)/test_rsa.exe
+            $(TEMP_DIR)/test_rsa.exe \
+            $(TEMP_DIR)/retrossl.exe
 
 RELEASE_EXES = $(RELEASE_DIR)/retrossl_sha1_$(BUILD_TAG).exe \
                $(RELEASE_DIR)/retrossl_md5_$(BUILD_TAG).exe \
                $(RELEASE_DIR)/retrossl_sha256_$(BUILD_TAG).exe \
                $(RELEASE_DIR)/retrossl_hmac_$(BUILD_TAG).exe \
                $(RELEASE_DIR)/retrossl_aes_$(BUILD_TAG).exe \
-               $(RELEASE_DIR)/retrossl_rsa_$(BUILD_TAG).exe
+               $(RELEASE_DIR)/retrossl_rsa_$(BUILD_TAG).exe \
+               $(RELEASE_DIR)/retrossl_$(BUILD_TAG).exe
 
 # Default target
 all: verify-toolchain $(TEST_EXES)
@@ -147,6 +149,9 @@ $(TEMP_DIR)/test_aes.exe: tests/test_aes.c $(CODEC_SRCS) $(CRYPTO_SRCS) | $(TEMP
 $(TEMP_DIR)/test_rsa.exe: tests/test_rsa.c $(CODEC_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
+$(TEMP_DIR)/retrossl.exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
 # Release targets (build to release with tagged names)
 $(RELEASE_DIR)/retrossl_sha1_$(BUILD_TAG).exe: tests/test_sha1.c $(CODEC_SRCS) src/hash/sha1.c | $(RELEASE_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
@@ -164,6 +169,9 @@ $(RELEASE_DIR)/retrossl_aes_$(BUILD_TAG).exe: tests/test_aes.c $(CODEC_SRCS) $(C
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 $(RELEASE_DIR)/retrossl_rsa_$(BUILD_TAG).exe: tests/test_rsa.c $(CODEC_SRCS) $(RSA_SRCS) | $(RELEASE_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
+$(RELEASE_DIR)/retrossl_$(BUILD_TAG).exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(RELEASE_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 # Test execution targets (requires Wine)
@@ -285,6 +293,11 @@ help:
 	@echo "  test-hmac    - Run HMAC test"
 	@echo "  test-aes     - Run AES test"
 	@echo "  test-rsa     - Run RSA test"
+	@echo ""
+	@echo "Command-line tools:"
+	@echo "  retrossl     - OpenSSL-compatible hash utility"
+	@echo "               Usage: echo 'data' | wine build/temp/retrossl.exe md5"
+	@echo "               Commands: md5, sha1, sha256, version, help"
 	@echo ""
 	@echo "Validation:"
 	@echo "  test-release - Test release builds"

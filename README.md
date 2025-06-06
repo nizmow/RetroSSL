@@ -18,6 +18,7 @@ make all test
 - **Message Authentication**: HMAC-SHA1, HMAC-SHA256 (RFC 2202 compliant)
 - **Symmetric Encryption**: AES-128 CBC with NIST test vectors
 - **Asymmetric Cryptography**: RSA i31 big integer arithmetic (foundation)
+- **Command-Line Tools**: OpenSSL-compatible `retrossl` utility
 
 ### 🔄 **In Development**
 - RSA modular exponentiation and public key operations
@@ -41,6 +42,11 @@ make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa
 
 # Build all development targets
 make all
+
+# Test OpenSSL-compatible command-line tools
+echo "abc" | wine build/temp/retrossl.exe md5
+echo "abc" | wine build/temp/retrossl.exe sha1
+echo "abc" | wine build/temp/retrossl.exe sha256
 
 # Check executable sizes
 make sizes
@@ -85,6 +91,13 @@ cat build/release/MANIFEST.txt
 - `test-aes` - AES-128 CBC encryption test
 - `test-rsa` - RSA big integer arithmetic test
 
+#### **OpenSSL-Compatible Command-Line Tools**
+- `retrossl md5` - Compute MD5 hash from stdin
+- `retrossl sha1` - Compute SHA-1 hash from stdin
+- `retrossl sha256` - Compute SHA-256 hash from stdin
+- `retrossl version` - Show version information
+- `retrossl help` - Display usage information
+
 #### **Release Validation**
 - `test-release` - Test release builds with Wine
 - `debug` - Show build configuration details
@@ -105,6 +118,7 @@ RetroSSL/
 │   └── int/           # Big integer arithmetic
 ├── include/           # Header files
 ├── tests/             # Test programs
+├── tools/             # Command-line utilities
 └── temp/              # External dependencies and analysis
 ```
 
@@ -132,16 +146,35 @@ RetroSSL/
 - **Modular arithmetic**: Decode, encode, bit length, modular inverse
 - **Foundation ready**: Prepared for full RSA implementation
 
+### **Command-Line Tools**
+- **OpenSSL Compatible**: Drop-in replacement for basic OpenSSL commands
+- **Algorithms**: MD5, SHA1, SHA256 hash computation from stdin
+- **Cross-platform**: Works on Windows 98 SE via Wine testing
+- **Professional output**: Hex-encoded hashes matching OpenSSL format
+
 ## Example Output
 
 ```bash
-$ make test-sha256
-RetroSSL SHA256 Test
-===================
+$ make test-md5
+RetroSSL MD5 Test
+=================
 Input: "abc"
-SHA256: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
-Expected: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
-✓ Test PASSED!
+MD5: 900150983cd24fb0d6963f7d28e17f72
+Expected: 900150983cd24fb0d6963f7d28e17f72
+✓ MD5 test PASSED!
+
+$ echo "abc" | wine build/temp/retrossl.exe md5
+0bee89b07a248e27c83fc3d5951213c1
+
+$ echo "abc" | wine build/temp/retrossl.exe sha1  
+03cfd743661f07975fa2f1220c5194cbaff48451
+
+$ wine build/temp/retrossl.exe version
+RetroSSL 0.1.0
+Built: 0.1.0-20250606-0946-4caad62
+Target: Windows 98 SE (i386)
+Compiler: Open Watcom C/C++
+Based on: BearSSL (minimal port)
 
 $ make test-rsa
 RetroSSL RSA Test
