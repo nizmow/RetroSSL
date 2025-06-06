@@ -119,6 +119,12 @@ int br_ssl_client_reset(br_ssl_client_context *cc,
 /* Simple initialization (no certificate validation) */
 void br_ssl_client_init_minimal(br_ssl_client_context *cc);
 
+/* Minimal handshake implementation */
+int br_ssl_handshake_client(br_ssl_client_context *cc,
+                           int (*sock_write)(int fd, const void *data, size_t len),
+                           int (*sock_read)(int fd, void *data, size_t len),
+                           int socket_fd);
+
 #ifdef __cplusplus
 }
 #endif
