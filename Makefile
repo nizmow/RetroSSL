@@ -57,6 +57,7 @@ RSA_SRCS = src/rsa/rsa_i31_pub.c \
 SSL_SRCS = src/ssl/ssl_engine.c \
            src/ssl/ssl_client.c \
            src/ssl/ssl_handshake.c \
+           src/ssl/ssl_record_simple.c \
            src/ssl/sslio.c
 
 # Test source files
@@ -78,7 +79,8 @@ TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
             $(TEMP_DIR)/test_rsa.exe \
             $(TEMP_DIR)/test_ssl_basic.exe \
             $(TEMP_DIR)/test_ssl_handshake.exe \
-            $(TEMP_DIR)/retrossl.exe
+            $(TEMP_DIR)/retrossl.exe \
+            $(TEMP_DIR)/http_client.exe
 
 RELEASE_EXES = $(RELEASE_DIR)/retrossl_sha1_$(BUILD_TAG).exe \
                $(RELEASE_DIR)/retrossl_md5_$(BUILD_TAG).exe \
@@ -165,6 +167,9 @@ $(TEMP_DIR)/test_ssl_handshake.exe: tests/test_ssl_handshake.c $(CODEC_SRCS) $(S
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 $(TEMP_DIR)/retrossl.exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
+$(TEMP_DIR)/http_client.exe: tools/http_client.c $(CODEC_SRCS) $(SSL_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 # Release targets (build to release with tagged names)

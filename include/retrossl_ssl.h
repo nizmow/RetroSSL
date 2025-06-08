@@ -125,6 +125,20 @@ int br_ssl_handshake_client(br_ssl_client_context *cc,
                            int (*sock_read)(int fd, void *data, size_t len),
                            int socket_fd);
 
+/* TLS record layer functions */
+int br_ssl_record_init_cbc(const unsigned char *client_write_mac_key,
+                          const unsigned char *server_write_mac_key,
+                          const unsigned char *client_write_key,
+                          const unsigned char *server_write_key,
+                          const unsigned char *client_write_iv,
+                          const unsigned char *server_write_iv);
+
+int br_ssl_record_send_data(int socket_fd, const unsigned char *data, size_t data_len,
+                           int (*sock_write)(int fd, const void *data, size_t len));
+
+int br_ssl_record_recv_data(int socket_fd, unsigned char *data, size_t max_len,
+                           int (*sock_read)(int fd, void *data, size_t len));
+
 #ifdef __cplusplus
 }
 #endif
