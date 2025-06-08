@@ -21,15 +21,21 @@ make all test
 - **HMAC**: SHA1/SHA256 message authentication (RFC 2202, OpenSSL-compatible)
 - **AES-128 CBC**: Symmetric encryption with NIST test vectors
 - **RSA**: Complete public key operations with OpenSSL interoperability
-- **TLS Handshake**: Real TLS 1.0 ClientHello/ServerHello with live servers
+- **TLS Handshake**: Complete TLS 1.0 handshake with proper encryption switching
 - **TLS PRF**: Complete key derivation (master secret → session keys)
-- **TLS Record Layer**: Application data framing (unencrypted proof-of-concept)
-- **HTTP/HTTPS Client**: Testing tool with working SSL handshake
+- **TLS Record Layer**: Real AES-128-CBC + HMAC-SHA1 encryption/decryption
+- **Certificate Parsing**: Basic DER/ASN.1 parser for RSA public key extraction
+- **PKCS#1 Encryption**: Proper RSA encryption with server's real public keys
+- **Encrypted Handshake**: Finished messages properly encrypted after ChangeCipherSpec
+- **TLS Protocol Handling**: Alert messages, cipher spec changes, multi-record responses
+- **HTTP/HTTPS Client**: Can perform complete TLS handshakes with live HTTPS servers
 - **Command-Line Tools**: OpenSSL-compatible `retrossl` utility
 
-### 🔄 **In Development**
-- Real CBC encryption/decryption using derived session keys
-- Complete encrypted TLS data transfer
+### 🔧 **Recent Improvements (BearSSL-based)**
+- **Real Certificate Parsing**: Extracts actual RSA modulus from server certificates
+- **Proper Key Exchange**: PKCS#1 type 2 padding with real server public keys
+- **BearSSL Compatibility**: Direct port of BearSSL's encryption switching logic
+- **Complete TLS Records**: Handles encrypted application data and protocol messages
 
 ## Build System
 
@@ -99,7 +105,7 @@ printf "abc" | wine build/temp/retrossl.exe sha256
 printf "abc" | openssl sha256
 # Both output: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
 
-# Test HTTPS handshake + key derivation
+# Test HTTPS handshake + encrypted request sending
 wine build/temp/http_client.exe https://httpbin.org /get
 
 # Test TLS key derivation

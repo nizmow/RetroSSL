@@ -57,7 +57,7 @@ RSA_SRCS = src/rsa/rsa_i31_pub.c \
 SSL_SRCS = src/ssl/ssl_engine.c \
            src/ssl/ssl_client.c \
            src/ssl/ssl_handshake.c \
-           src/ssl/ssl_record_simple.c \
+           src/ssl/ssl_record_cbc.c \
            src/ssl/ssl_prf.c \
            src/ssl/sslio.c
 
@@ -71,7 +71,8 @@ TEST_SRCS = tests/test_sha1.c \
             tests/test_ssl_basic.c \
             tests/test_ssl_handshake.c \
             tests/test_ssl_prf.c \
-            tests/test_hmac_openssl.c
+            tests/test_hmac_openssl.c \
+            tests/test_record_layer.c
 
 # Output executables
 TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
@@ -84,6 +85,7 @@ TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
             $(TEMP_DIR)/test_ssl_handshake.exe \
             $(TEMP_DIR)/test_ssl_prf.exe \
             $(TEMP_DIR)/test_hmac_openssl.exe \
+            $(TEMP_DIR)/test_record_layer.exe \
             $(TEMP_DIR)/retrossl.exe \
             $(TEMP_DIR)/http_client.exe
 
@@ -177,10 +179,13 @@ $(TEMP_DIR)/test_ssl_prf.exe: tests/test_ssl_prf.c $(CODEC_SRCS) $(SSL_SRCS) $(H
 $(TEMP_DIR)/test_hmac_openssl.exe: tests/test_hmac_openssl.c $(CODEC_SRCS) $(HASH_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
+$(TEMP_DIR)/test_record_layer.exe: tests/test_record_layer.c $(CODEC_SRCS) $(SSL_SRCS) $(HASH_SRCS) $(MAC_SRCS) $(CRYPTO_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
 $(TEMP_DIR)/retrossl.exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
-$(TEMP_DIR)/http_client.exe: tools/http_client.c $(CODEC_SRCS) $(SSL_SRCS) | $(TEMP_DIR)
+$(TEMP_DIR)/http_client.exe: tools/http_client.c $(CODEC_SRCS) $(SSL_SRCS) $(RSA_SRCS) $(HASH_SRCS) $(MAC_SRCS) $(CRYPTO_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 # Release targets (build to release with tagged names)
@@ -227,6 +232,8 @@ test: $(TEST_EXES)
 	$(WINE) $(TEMP_DIR)/test_ssl_handshake.exe
 	@echo "Testing SSL PRF..."
 	$(WINE) $(TEMP_DIR)/test_ssl_prf.exe
+	@echo "Testing TLS record layer..."
+	$(WINE) $(TEMP_DIR)/test_record_layer.exe
 	@echo "All tests completed!"
 
 # Individual test runs
@@ -256,6 +263,9 @@ test-ssl-handshake: $(TEMP_DIR)/test_ssl_handshake.exe
 
 test-ssl-prf: $(TEMP_DIR)/test_ssl_prf.exe
 	$(WINE) $(TEMP_DIR)/test_ssl_prf.exe
+
+test-record-layer: $(TEMP_DIR)/test_record_layer.exe
+	$(WINE) $(TEMP_DIR)/test_record_layer.exe
 
 # Release validation
 test-release: release

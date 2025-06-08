@@ -1,8 +1,8 @@
 # Claude Agent Instructions for RetroSSL Project
 
-## 🚨 PROJECT GOAL: MINIMAL BEARSSL PORT
+## PROJECT GOAL: MINIMAL BEARSSL PORT
 
-**RetroSSL is a minimal port of BearSSL to Open Watcom C/C++ for Windows 98 SE.**
+RetroSSL is a minimal port of BearSSL to Open Watcom C/C++ for Windows 98 SE.
 
 ### CORE PRINCIPLE: BearSSL First, Always
 - **ALWAYS** start with original BearSSL source from `temp/bearssl-analysis/src/`
@@ -21,11 +21,11 @@
 
 **When in doubt: Check BearSSL source first. Innovation is NOT the goal - compatibility is.**
 
-## 🚨 Check Local Documentation First
+## Check Local Documentation First
 
 This project has local documentation that MUST be consulted before external research.
 
-## Required Reading Order
+### Required Reading Order
 
 1. **Open Watcom Issues**: `WATCOM_SETUP_NOTES.md` - All gotchas and solutions
 2. **C Library Questions**: `docs/watcom/clib_reference.md` - Available functions

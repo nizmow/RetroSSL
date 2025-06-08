@@ -64,6 +64,11 @@ struct br_ssl_engine_context_ {
     /* Session state */
     br_ssl_session_parameters session;
     
+    /* Handshake data */
+    unsigned char pre_master_secret[48];
+    unsigned char *certificate_data;
+    size_t certificate_len;
+    
     /* Protocol state */
     unsigned version_min;
     unsigned version_max; 
@@ -138,6 +143,10 @@ int br_ssl_record_send_data(int socket_fd, const unsigned char *data, size_t dat
 
 int br_ssl_record_recv_data(int socket_fd, unsigned char *data, size_t max_len,
                            int (*sock_read)(int fd, void *data, size_t len));
+
+int br_ssl_record_encrypt_cbc(int record_type, const unsigned char *plaintext, 
+                             size_t plaintext_len, unsigned char *output, 
+                             size_t *output_len);
 
 /* TLS PRF functions */
 void br_tls10_prf(void *dst, size_t len,
