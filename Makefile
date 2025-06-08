@@ -58,6 +58,7 @@ SSL_SRCS = src/ssl/ssl_engine.c \
            src/ssl/ssl_client.c \
            src/ssl/ssl_handshake.c \
            src/ssl/ssl_record_simple.c \
+           src/ssl/ssl_prf.c \
            src/ssl/sslio.c
 
 # Test source files
@@ -68,7 +69,9 @@ TEST_SRCS = tests/test_sha1.c \
             tests/test_aes.c \
             tests/test_rsa.c \
             tests/test_ssl_basic.c \
-            tests/test_ssl_handshake.c
+            tests/test_ssl_handshake.c \
+            tests/test_ssl_prf.c \
+            tests/test_hmac_openssl.c
 
 # Output executables
 TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
@@ -79,6 +82,8 @@ TEST_EXES = $(TEMP_DIR)/test_sha1.exe \
             $(TEMP_DIR)/test_rsa.exe \
             $(TEMP_DIR)/test_ssl_basic.exe \
             $(TEMP_DIR)/test_ssl_handshake.exe \
+            $(TEMP_DIR)/test_ssl_prf.exe \
+            $(TEMP_DIR)/test_hmac_openssl.exe \
             $(TEMP_DIR)/retrossl.exe \
             $(TEMP_DIR)/http_client.exe
 
@@ -166,6 +171,12 @@ $(TEMP_DIR)/test_ssl_basic.exe: tests/test_ssl_basic.c $(CODEC_SRCS) $(SSL_SRCS)
 $(TEMP_DIR)/test_ssl_handshake.exe: tests/test_ssl_handshake.c $(CODEC_SRCS) $(SSL_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
+$(TEMP_DIR)/test_ssl_prf.exe: tests/test_ssl_prf.c $(CODEC_SRCS) $(SSL_SRCS) $(HASH_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
+$(TEMP_DIR)/test_hmac_openssl.exe: tests/test_hmac_openssl.c $(CODEC_SRCS) $(HASH_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
 $(TEMP_DIR)/retrossl.exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
@@ -214,6 +225,8 @@ test: $(TEST_EXES)
 	$(WINE) $(TEMP_DIR)/test_ssl_basic.exe
 	@echo "Testing SSL handshake..."
 	$(WINE) $(TEMP_DIR)/test_ssl_handshake.exe
+	@echo "Testing SSL PRF..."
+	$(WINE) $(TEMP_DIR)/test_ssl_prf.exe
 	@echo "All tests completed!"
 
 # Individual test runs
@@ -240,6 +253,9 @@ test-ssl: $(TEMP_DIR)/test_ssl_basic.exe
 
 test-ssl-handshake: $(TEMP_DIR)/test_ssl_handshake.exe
 	$(WINE) $(TEMP_DIR)/test_ssl_handshake.exe
+
+test-ssl-prf: $(TEMP_DIR)/test_ssl_prf.exe
+	$(WINE) $(TEMP_DIR)/test_ssl_prf.exe
 
 # Release validation
 test-release: release

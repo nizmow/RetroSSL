@@ -18,17 +18,18 @@ make all test
 
 ### ✅ **Working Features**
 - **Hash Functions**: SHA1, MD5, SHA256 with test vectors
-- **HMAC**: SHA1/SHA256 message authentication (RFC 2202)
+- **HMAC**: SHA1/SHA256 message authentication (RFC 2202, OpenSSL-compatible)
 - **AES-128 CBC**: Symmetric encryption with NIST test vectors
 - **RSA**: Complete public key operations with OpenSSL interoperability
 - **TLS Handshake**: Real TLS 1.0 ClientHello/ServerHello with live servers
+- **TLS PRF**: Complete key derivation (master secret → session keys)
 - **TLS Record Layer**: Application data framing (unencrypted proof-of-concept)
 - **HTTP/HTTPS Client**: Testing tool with working SSL handshake
 - **Command-Line Tools**: OpenSSL-compatible `retrossl` utility
 
 ### 🔄 **In Development**
-- Real CBC encryption/decryption with key derivation
-- Complete TLS data transfer
+- Real CBC encryption/decryption using derived session keys
+- Complete encrypted TLS data transfer
 
 ## Build System
 
@@ -38,7 +39,7 @@ make all test
 make all test
 
 # Individual tests  
-make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa test-ssl test-ssl-handshake
+make test-sha1 test-md5 test-sha256 test-hmac test-aes test-rsa test-ssl test-ssl-handshake test-ssl-prf
 
 # Release with tagging
 make release package
@@ -76,10 +77,10 @@ RetroSSL/
 
 ### **Cryptographic Primitives**
 - **Hashes**: SHA1/MD5/SHA256 (RFC compliant)
-- **HMAC**: Variable key lengths, standard test vectors
+- **HMAC**: Variable key lengths, OpenSSL-compatible output
 - **AES-128 CBC**: NIST validated encrypt/decrypt
 - **RSA**: Montgomery arithmetic, constant-time operations
-- **TLS**: Real handshake with live HTTPS servers
+- **TLS**: Complete handshake + key derivation with live HTTPS servers
 
 ### **Tools & Testing**
 - **retrossl**: OpenSSL-compatible hash commands (`md5`, `sha1`, `sha256`)
@@ -98,8 +99,14 @@ printf "abc" | wine build/temp/retrossl.exe sha256
 printf "abc" | openssl sha256
 # Both output: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
 
-# Test HTTPS handshake
+# Test HTTPS handshake + key derivation
 wine build/temp/http_client.exe https://httpbin.org /get
+
+# Test TLS key derivation
+wine build/temp/test_ssl_prf.exe
+
+# Test OpenSSL HMAC compatibility
+wine build/temp/test_hmac_openssl.exe
 ```
 
 See **[TESTING.md](TESTING.md)** for comprehensive testing procedures.

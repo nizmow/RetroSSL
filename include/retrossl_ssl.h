@@ -139,6 +139,27 @@ int br_ssl_record_send_data(int socket_fd, const unsigned char *data, size_t dat
 int br_ssl_record_recv_data(int socket_fd, unsigned char *data, size_t max_len,
                            int (*sock_read)(int fd, void *data, size_t len));
 
+/* TLS PRF functions */
+void br_tls10_prf(void *dst, size_t len,
+                 const void *secret, size_t secret_len,
+                 const char *label,
+                 const void *seed, size_t seed_len);
+
+int br_ssl_derive_keys(const unsigned char master_secret[48],
+                      const unsigned char client_random[32],
+                      const unsigned char server_random[32],
+                      unsigned char *client_write_mac_key,
+                      unsigned char *server_write_mac_key,
+                      unsigned char *client_write_key,
+                      unsigned char *server_write_key,
+                      unsigned char *client_write_iv,
+                      unsigned char *server_write_iv);
+
+int br_ssl_compute_master_secret(const unsigned char *pre_master_secret, size_t pms_len,
+                                const unsigned char client_random[32],
+                                const unsigned char server_random[32],
+                                unsigned char master_secret[48]);
+
 #ifdef __cplusplus
 }
 #endif
