@@ -167,19 +167,22 @@ $(TEMP_DIR)/test_aes.exe: tests/test_aes.c $(CODEC_SRCS) $(CRYPTO_SRCS) | $(TEMP
 $(TEMP_DIR)/test_rsa.exe: tests/test_rsa.c $(CODEC_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
-$(TEMP_DIR)/test_ssl_basic.exe: tests/test_ssl_basic.c $(CODEC_SRCS) $(SSL_SRCS) | $(TEMP_DIR)
+$(TEMP_DIR)/test_rsa_debug.exe: tests/test_rsa_debug.c $(CODEC_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
-$(TEMP_DIR)/test_ssl_handshake.exe: tests/test_ssl_handshake.c $(CODEC_SRCS) $(SSL_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
+$(TEMP_DIR)/test_ssl_basic.exe: tests/test_ssl_basic.c $(CODEC_SRCS) $(SSL_SRCS) $(RSA_SRCS) $(HASH_SRCS) $(CRYPTO_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
-$(TEMP_DIR)/test_ssl_prf.exe: tests/test_ssl_prf.c $(CODEC_SRCS) $(SSL_SRCS) $(HASH_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
+$(TEMP_DIR)/test_ssl_handshake.exe: tests/test_ssl_handshake.c $(CODEC_SRCS) $(SSL_SRCS) $(RSA_SRCS) $(HASH_SRCS) $(CRYPTO_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
+	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
+
+$(TEMP_DIR)/test_ssl_prf.exe: tests/test_ssl_prf.c $(CODEC_SRCS) $(SSL_SRCS) $(HASH_SRCS) $(MAC_SRCS) $(CRYPTO_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 $(TEMP_DIR)/test_hmac_openssl.exe: tests/test_hmac_openssl.c $(CODEC_SRCS) $(HASH_SRCS) $(MAC_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
-$(TEMP_DIR)/test_record_layer.exe: tests/test_record_layer.c $(CODEC_SRCS) $(SSL_SRCS) $(HASH_SRCS) $(MAC_SRCS) $(CRYPTO_SRCS) | $(TEMP_DIR)
+$(TEMP_DIR)/test_record_layer.exe: tests/test_record_layer.c $(CODEC_SRCS) $(SSL_SRCS) $(HASH_SRCS) $(MAC_SRCS) $(CRYPTO_SRCS) $(RSA_SRCS) | $(TEMP_DIR)
 	WATCOM=$(WATCOM_PATH) PATH=$(WATCOM_PATH)/armo64:$$PATH $(CC) $(CFLAGS) -fe=$@ $^
 
 $(TEMP_DIR)/retrossl.exe: tools/retrossl.c $(CODEC_SRCS) $(HASH_SRCS) | $(TEMP_DIR)

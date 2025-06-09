@@ -69,6 +69,12 @@ struct br_ssl_engine_context_ {
     unsigned char *certificate_data;
     size_t certificate_len;
     
+    /* Random values from handshake */
+    unsigned char client_random[32];
+    unsigned char server_random[32];
+    size_t client_random_len;
+    size_t server_random_len;
+    
     /* Protocol state */
     unsigned version_min;
     unsigned version_max; 
@@ -168,6 +174,9 @@ int br_ssl_compute_master_secret(const unsigned char *pre_master_secret, size_t 
                                 const unsigned char client_random[32],
                                 const unsigned char server_random[32],
                                 unsigned char master_secret[48]);
+
+/* Master secret derivation (BearSSL compatible) */
+void br_ssl_engine_compute_master(br_ssl_client_context *cc, const void *pms, size_t pms_len);
 
 #ifdef __cplusplus
 }
